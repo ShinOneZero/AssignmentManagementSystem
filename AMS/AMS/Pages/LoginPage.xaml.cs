@@ -13,17 +13,22 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AMS
+namespace AMS.Pages
 {
     /// <summary>
-    /// MainWindow.xaml에 대한 상호 작용 논리
+    /// Page1.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class LoginPage : Page
     {
-        public MainWindow()
+        public LoginPage()
         {
             InitializeComponent();
-            mainFrame.Navigate(new Uri("/Pages/LoginPage.xaml", UriKind.RelativeOrAbsolute));
+        }
+        //Show Main Page on Login Button Click
+        MainWindow mainWindow { get => Application.Current.MainWindow as MainWindow; }
+        private void LoginButton_Click(object sender, RoutedEventArgs e)
+        {
+            mainWindow.mainFrame.Navigate(new Uri("/Pages/DashboardPage.xaml", UriKind.RelativeOrAbsolute));
         }
     }
 }

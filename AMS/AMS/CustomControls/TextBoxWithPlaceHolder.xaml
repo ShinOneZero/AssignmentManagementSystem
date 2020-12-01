@@ -5,17 +5,18 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AMS.CustomControls"
              mc:Ignorable="d" 
-             MinWidth="300">
+             MinWidth="300"
+             x:Name="_this">
     <UserControl.Resources>
         <Style x:Key="credentialTxTtitleStyle" TargetType="{x:Type TextBlock}">
             <Setter Property="HorizontalAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="Foreground" Value="#a3a3a4"/>
             <Setter Property="FontSize" Value="20"/>
-            <Setter Property="Text" Value="Email"/>
+            <Setter Property="Text" Value="{Binding PlaceHolder, ElementName=_this}"/>
             <Setter Property="Padding" Value="2,0"/>
             <Style.Triggers>
-                <DataTrigger Binding="{Binding Text, ElementName=email}" Value="">
+                <DataTrigger Binding="{Binding Text, ElementName=content}" Value="">
                     
                     <!--Default Position and fontsize of Title-->
                     <DataTrigger.EnterActions>
@@ -41,6 +42,7 @@
         </Style>
 
         <Style x:Key="credentialsTxTStyle" TargetType="{x:Type TextBox}">
+            <Setter Property="Text" Value="{Binding Text, Mode=TwoWay, ElementName=_this}"/>
             <Setter Property="TextAlignment" Value="Left"/>
             <Setter Property="VerticalAlignment" Value="Center"/>
             <Setter Property="FontWeight" Value="SemiBold"/>
@@ -48,7 +50,7 @@
             <Setter Property="BorderThickness" Value="0"/>
 
             <Style.Triggers>
-                
+
                 <DataTrigger Binding="{Binding FontSize, ElementName=title}" Value="15">
 
                     <!--Default Position and fontsize of Title-->
@@ -71,7 +73,89 @@
                         </BeginStoryboard>
                     </DataTrigger.ExitActions>
                 </DataTrigger>
+
+                <!--Get password inside the textbox if the textbox text is empty-->
+                <DataTrigger Binding="{Binding Text, Mode=TwoWay, ElementName=_this}" Value="False">
+                    <Setter Property="Text" Value="{Binding Password, ElementName=passBox}"/>
+                </DataTrigger>
+
+                <!--Also show only when the Show assword Button is pressed-->
+                <!--If password box is visible then hide textbox-->
+
+                <DataTrigger Binding="{Binding Visibility, ElementName=passBox}" Value="Visible">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
             </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type PasswordBox}">
+            <Setter Property="Padding" Value="2, 0, 30, 0"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+
+            <Style.Triggers>
+
+                <DataTrigger Binding="{Binding FontSize, ElementName=title}" Value="15">
+
+                    <!--Default Position and fontsize of Title-->
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard SpeedRatio="10">
+                                <DoubleAnimation Storyboard.TargetProperty="FontSize" To="20"/>
+                                <ThicknessAnimation Storyboard.TargetProperty="Margin" To="0 20 0 0"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+
+                    <!--Position and FontSize of Title when Email Textbox has value-->
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard SpeedRatio="10">
+                                <DoubleAnimation Storyboard.TargetProperty="FontSize" To="15"/>
+                                <ThicknessAnimation Storyboard.TargetProperty="Margin" To="0"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+                
+                <!--Hide password if the IsPassword = false-->
+                <DataTrigger Binding="{Binding IsPassword, ElementName=_this}" Value="False">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+                
+                <!--Also show only when the Show assword Button is pressed-->
+                <DataTrigger Binding="{Binding IsPressed, ElementName=showPass}" Value="True">
+                    <Setter Property="Visibility" Value="Collapsed"/>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+        <Style TargetType="{x:Type Button}">
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="HorizontalAlignment" Value="Right"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Foreground" Value="#A3A3A4"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="{x:Type Button}">
+                        <Border Background="{TemplateBinding Background}">
+                            <Path 
+                                Width="20"
+                                Stretch="Uniform"
+                                Fill="{TemplateBinding Foreground}"
+                                Data="{StaticResource showPass}"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            
+                            <!--Hide button if not IsPassword-->
+                            <DataTrigger Binding="{Binding IsPassword, ElementName=_this}" Value="False">
+                                <Setter Property="Visibility" Value="Collapsed"/>
+                            </DataTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
         </Style>
     </UserControl.Resources>
     <Border
@@ -81,19 +165,31 @@
         
         <!--Border Shadow Effect-->
         <Border.Effect>
-            <DropShadowEffect BlurRadius="23" ShadowDepth="5" Direction="270" Color="WhiteSmoke"/>
+            <DropShadowEffect BlurRadius="23" ShadowDepth="5" Direction="270" Color="LightGray"/>
         </Border.Effect>
 
         <Grid Margin="20,6">
             <!--Title-->
             <TextBlock
-              x:Name="title"
-              Style="{StaticResource credentialTxTtitleStyle}"/>
-
+                x:Name="title"
+                Style="{StaticResource credentialTxTtitleStyle}"/>
+            
             <!--Textbox-->
             <TextBox
-              x:Name="email"
-              Style="{StaticResource credentialsTxTStyle}"/>
+                x:Name="content"
+                Style="{StaticResource credentialsTxTStyle}"/>
+
+            <!--To update textbox on password change-->
+            <PasswordBox
+                x:Name="passBox"
+                PasswordChanged="passBox_PasswordChanged"/>
+            
+            <Button
+                x:Name="showPass"
+                Background="Transparent"
+                BorderThickness="0"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Center"/>
         </Grid>
     </Border>
 </UserControl>

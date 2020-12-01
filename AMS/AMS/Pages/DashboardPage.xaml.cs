@@ -10,16 +10,17 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace AMS
+namespace AMS.Pages
 {
     /// <summary>
-    /// LoginWindow.xaml에 대한 상호 작용 논리
+    /// DashboardPage.xaml에 대한 상호 작용 논리
     /// </summary>
-    public partial class LoginWindow : Window
+    public partial class DashboardPage : Page
     {
-        public LoginWindow()
+        public DashboardPage()
         {
             InitializeComponent();
         }
