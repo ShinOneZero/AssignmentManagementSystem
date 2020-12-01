@@ -20,15 +20,33 @@ namespace AMS.Pages
     /// </summary>
     public partial class LoginPage : Page
     {
+        #region Members
+        private DelegateCommand forgetPasswordCommand;
+        private MainWindow mainWindow { get => Application.Current.MainWindow as MainWindow; }
+        #endregion
+
+        #region Interface
+        public DelegateCommand ForgetPasswordCommand
+        {
+            get { return forgetPasswordCommand; }
+        }
+        #endregion
         public LoginPage()
         {
             InitializeComponent();
+            DataContext = this;
+            forgetPasswordCommand = new DelegateCommand( x=> ForgetPassword(x));
         }
         //Show Main Page on Login Button Click
-        MainWindow mainWindow { get => Application.Current.MainWindow as MainWindow; }
+        
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
             mainWindow.mainFrame.Navigate(new Uri("/Pages/DashboardPage.xaml", UriKind.RelativeOrAbsolute));
+        }
+
+        private void ForgetPassword(object e)
+        {
+            mainWindow.Overlay.Visibility = Visibility.Visible;
         }
     }
 }

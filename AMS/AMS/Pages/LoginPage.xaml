@@ -124,6 +124,9 @@
                     x:Name="ForgetPasswordButton"
                     Text="비밀번호를 분실하셨나요?"
                     Style="{StaticResource linkText}">
+                    <TextBlock.InputBindings>
+                        <MouseBinding Command="{Binding ForgetPasswordCommand}" MouseAction="LeftClick" />
+                    </TextBlock.InputBindings>
                 </TextBlock>
                 
                 <!--Login Button-->

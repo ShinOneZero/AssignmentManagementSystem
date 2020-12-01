@@ -5,8 +5,39 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:AMS"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
+    <Window.Resources>
+        <Style x:Key="OverlayStyle" TargetType="{x:Type Border}">
+            <Setter Property="Background" Value="Black"/>
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding Visibility, ElementName=Overlay}" Value="Visible">
+                    
+                    <!--Show Popup Animation-->
+                    <DataTrigger.EnterActions>
+                        <BeginStoryboard>
+                            <Storyboard SpeedRatio="7">
+                                <DoubleAnimation 
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="0.0" To="0.9"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.EnterActions>
+                    <DataTrigger.ExitActions>
+                        <BeginStoryboard>
+                            <Storyboard SpeedRatio="7">
+                                <DoubleAnimation 
+                                    Storyboard.TargetProperty="Opacity"
+                                    From="0.9" To="0.0"/>
+                            </Storyboard>
+                        </BeginStoryboard>
+                    </DataTrigger.ExitActions>
+                </DataTrigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
     <Grid>
         <Frame x:Name="mainFrame" NavigationUIVisibility="Hidden"/>
+        <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}">
+        </Border>
     </Grid>
 </Window>
