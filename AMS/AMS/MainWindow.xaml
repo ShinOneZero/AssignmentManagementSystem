@@ -3,9 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AMS"
+        xmlns:local="clr-namespace:AMS" xmlns:customcontrols="clr-namespace:AMS.CustomControls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800" WindowState="Maximized">
+        Title="MainWindow" 
+        Height="450" Width="800" 
+        WindowState="Maximized"
+        x:Name="_this">
     <Window.Resources>
         <Style x:Key="OverlayStyle" TargetType="{x:Type Border}">
             <Setter Property="Background" Value="Black"/>
@@ -38,6 +41,12 @@
     <Grid>
         <Frame x:Name="mainFrame" NavigationUIVisibility="Hidden"/>
         <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}">
+            <customcontrols:DraggablePopup 
+                IsOpen="True" 
+                Placement="AbsolutePoint"
+                PlacementTarget="{Binding ElementName=_this}">
+                <Rectangle Width="200" Height="200" Fill="Blue"/>
+            </customcontrols:DraggablePopup>
         </Border>
     </Grid>
 </Window>
