@@ -3,7 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AMS" xmlns:customcontrols="clr-namespace:AMS.CustomControls"
+        xmlns:local="clr-namespace:AMS" xmlns:customcontrols="clr-namespace:AMS.CustomControls" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
         mc:Ignorable="d"
         Title="MainWindow" 
         Height="450" Width="800" 
@@ -14,11 +14,10 @@
             <Setter Property="Background" Value="Black"/>
             <Style.Triggers>
                 <DataTrigger Binding="{Binding Visibility, ElementName=Overlay}" Value="Visible">
-                    
                     <!--Show Popup Animation-->
                     <DataTrigger.EnterActions>
                         <BeginStoryboard>
-                            <Storyboard SpeedRatio="7">
+                            <Storyboard SpeedRatio="6">
                                 <DoubleAnimation 
                                     Storyboard.TargetProperty="Opacity"
                                     From="0.0" To="0.9"/>
@@ -27,7 +26,7 @@
                     </DataTrigger.EnterActions>
                     <DataTrigger.ExitActions>
                         <BeginStoryboard>
-                            <Storyboard SpeedRatio="7">
+                            <Storyboard SpeedRatio="6">
                                 <DoubleAnimation 
                                     Storyboard.TargetProperty="Opacity"
                                     From="0.9" To="0.0"/>
@@ -40,13 +39,11 @@
     </Window.Resources>
     <Grid>
         <Frame x:Name="mainFrame" NavigationUIVisibility="Hidden"/>
-        <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}">
-            <customcontrols:DraggablePopup 
-                IsOpen="True" 
-                Placement="AbsolutePoint"
-                PlacementTarget="{Binding ElementName=_this}">
-                <Rectangle Width="200" Height="200" Fill="Blue"/>
-            </customcontrols:DraggablePopup>
-        </Border>
+        <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}"/>
+        <ContentControl x:Name="popup" Visibility="Collapsed">
+            <i:Interaction.Behaviors>
+                <customcontrols:DragBehavior/>
+            </i:Interaction.Behaviors>
+        </ContentControl>
     </Grid>
 </Window>

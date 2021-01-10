@@ -59,6 +59,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Page Include="CustomControls\ForgetPasswordWindow.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\TextBoxWithPlaceHolder.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -72,7 +76,9 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="CustomControls\DragBehavior.cs" />
-    <Compile Include="CustomControls\DraggablePopup.cs" />
+    <Compile Include="CustomControls\ForgetPasswordWindow.xaml.cs">
+      <DependentUpon>ForgetPasswordWindow.xaml</DependentUpon>
+    </Compile>
     <Compile Include="CustomControls\TextBoxWithPlaceHolder.xaml.cs">
       <DependentUpon>TextBoxWithPlaceHolder.xaml</DependentUpon>
     </Compile>
@@ -85,6 +91,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Pages\ForgetPasswordPage1.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\LoginPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -93,6 +103,9 @@
   <ItemGroup>
     <Compile Include="Pages\DashboardPage.xaml.cs">
       <DependentUpon>DashboardPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Pages\ForgetPasswordPage1.xaml.cs">
+      <DependentUpon>ForgetPasswordPage1.xaml</DependentUpon>
     </Compile>
     <Compile Include="Pages\LoginPage.xaml.cs">
       <DependentUpon>LoginPage.xaml</DependentUpon>
@@ -125,7 +138,9 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Database\" />
-    <Folder Include="Resources\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Resources\ico_forgetpassword.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

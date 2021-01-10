@@ -1,4 +1,5 @@
-﻿using System;
+﻿using AMS.CustomControls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -47,6 +48,8 @@ namespace AMS.Pages
         private void ForgetPassword(object e)
         {
             mainWindow.Overlay.Visibility = Visibility.Visible;
+            mainWindow.popup.Visibility = Visibility.Visible;
+            mainWindow.popup.Content = new ForgetPasswordWindow();
         }
     }
 }

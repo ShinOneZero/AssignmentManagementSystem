@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:AMS.Pages"
       xmlns:CustomControls="clr-namespace:AMS.CustomControls"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="600" d:DesignWidth="800"
       Title="LoginPage"
       Background="WhiteSmoke">
     <Page.Resources>
@@ -146,13 +146,15 @@
                 TextAlignment="Center"
                 TextWrapping="Wrap"
                 Foreground="#A3A3A4"
-                FontWeight="SemiBold"
-                FontSize="13">
+                FontSize="15">
                 <Run
                     Text="EP아이디와, 패스워드(직번)를 입력하여 로그인해주세요."/>
                 <LineBreak/>
                 <Run
-                    Text="ECM보기모드에서 로그인하시면 작업내용이 저장되지 않습니다."/>
+                    Text="ECM보기모드에서 로그인하시면"/>
+                <LineBreak/>
+                <Run
+                    Text="작업내용이 저장되지 않습니다."/>
             </TextBlock>
         </Grid>
     </Grid>
