@@ -31,6 +31,11 @@ namespace AMS.CustomControls
             set { SetValue(PlaceHolderProperty, value); }
         }
 
+        public void FocusItem()
+        {
+            this.content.Focus();
+        }
+
         // Using a DependencyProperty as the backing store for PlaceHolder.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PlaceHolderProperty =
             DependencyProperty.Register("PlaceHolder", typeof(string), typeof(TextBoxWithPlaceHolder));

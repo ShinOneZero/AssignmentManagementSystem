@@ -3,9 +3,12 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:AMS" xmlns:customcontrols="clr-namespace:AMS.CustomControls" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+        xmlns:local="clr-namespace:AMS" 
+        xmlns:customcontrols="clr-namespace:AMS.CustomControls" 
+        xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         mc:Ignorable="d"
-        Title="MainWindow" 
+        Title="품질관리 개선업무 의뢰 시스템" 
         Height="450" Width="800" 
         WindowState="Maximized"
         x:Name="_this">
@@ -17,33 +20,131 @@
                     <!--Show Popup Animation-->
                     <DataTrigger.EnterActions>
                         <BeginStoryboard>
-                            <Storyboard SpeedRatio="6">
+                            <Storyboard SpeedRatio="12">
                                 <DoubleAnimation 
                                     Storyboard.TargetProperty="Opacity"
-                                    From="0.0" To="0.9"/>
+                                    From="0.0" To="0.7"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.EnterActions>
                     <DataTrigger.ExitActions>
                         <BeginStoryboard>
-                            <Storyboard SpeedRatio="6">
+                            <Storyboard SpeedRatio="12">
                                 <DoubleAnimation 
                                     Storyboard.TargetProperty="Opacity"
-                                    From="0.9" To="0.0"/>
+                                    From="0.7" To="0.0"/>
                             </Storyboard>
                         </BeginStoryboard>
                     </DataTrigger.ExitActions>
                 </DataTrigger>
             </Style.Triggers>
         </Style>
+        
+        <!-- About Side Menu Event-->
+        <Storyboard x:Key="OpenMenu">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="50"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="200"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
+        <Storyboard x:Key="CloseMenu">
+            <DoubleAnimationUsingKeyFrames Storyboard.TargetProperty="(FrameworkElement.Width)" Storyboard.TargetName="GridMenu">
+                <EasingDoubleKeyFrame KeyTime="0" Value="200"/>
+                <EasingDoubleKeyFrame KeyTime="0:0:0.3" Value="50"/>
+            </DoubleAnimationUsingKeyFrames>
+        </Storyboard>
     </Window.Resources>
-    <Grid>
-        <Frame x:Name="mainFrame" NavigationUIVisibility="Hidden"/>
-        <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}"/>
-        <ContentControl x:Name="popup" Visibility="Collapsed">
-            <i:Interaction.Behaviors>
-                <customcontrols:DragBehavior/>
-            </i:Interaction.Behaviors>
-        </ContentControl>
-    </Grid>
+    <Window.Triggers>
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonOpenMenu">
+            <BeginStoryboard Storyboard="{StaticResource OpenMenu}"/>
+        </EventTrigger>
+        <EventTrigger RoutedEvent="ButtonBase.Click" SourceName="ButtonCloseMenu">
+            <BeginStoryboard Storyboard="{StaticResource CloseMenu}"/>
+        </EventTrigger>
+    </Window.Triggers>
+    <Border>
+        <Grid>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- Slide Bar-->
+                <Grid x:Name="GridMenu" Width="50" HorizontalAlignment="Left" Background="#FF3A3A3A" Grid.Column="0" Visibility="Collapsed">
+                    <DockPanel>
+                        <Grid x:Name="SettingsView" DockPanel.Dock="Bottom" HorizontalAlignment="Stretch">
+                            <StackPanel Height="100" RenderTransformOrigin="0.3,0.3">
+                                <Grid ToolTip="도움말" >
+                                    <Button x:Name="HelpButton" Click="HelpButton_Click" Margin="0" Height="50" Width="200" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalAlignment="Center" >
+                                        <Button.Content>
+                                            <DockPanel>
+                                                <materialDesign:PackIcon Kind="HelpCircle" DockPanel.Dock="Left" Foreground="White" Height="25" Width="25" Margin="-3 0" Padding="0" />
+                                                <TextBlock Text="도움말" VerticalAlignment="Center" Margin="20 5" />
+                                            </DockPanel>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+                                <Grid ToolTip="환경설정">
+                                    <Button x:Name="SettingButton" Click="SettingButton_Click" Margin="0" Height="50" Width="200" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Left" HorizontalContentAlignment="Left" VerticalAlignment="Center">
+                                        <Button.Content>
+                                            <DockPanel>
+                                                <materialDesign:PackIcon Kind="Settings" DockPanel.Dock="Left" Foreground="White" Height="25" Width="25" Margin="-3 0" Padding="0" />
+                                                <TextBlock Text="환경설정" VerticalAlignment="Center" Margin="20 5" />
+                                            </DockPanel>
+                                        </Button.Content>
+                                    </Button>
+                                </Grid>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Height="50" RenderTransformOrigin="0.3,0.3" DockPanel.Dock="Top">
+                            <Button x:Name="ButtonOpenMenu"  Click="ButtonOpenMenu_Click" Visibility="Visible" Margin="0" Height="50" Width="50" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Left" VerticalAlignment="Center" >
+                                <materialDesign:PackIcon Kind="Menu" Foreground="White" Height="25" Width="25"  Margin="-10" Padding="0" />
+                            </Button>
+                            <Button x:Name="ButtonCloseMenu"  Click="ButtonCloseMenu_Click" Visibility="Collapsed" Margin="0" Height="50" Width="50" Background="{x:Null}" BorderBrush="{x:Null}" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <materialDesign:PackIcon Kind="Menu" Foreground="White" Height="25" Width="25" Margin="-10" Padding="0" />
+                            </Button>
+                        </Grid>
+
+                        <ListView x:Name="ListViewMenu" Foreground="White" ScrollViewer.HorizontalScrollBarVisibility="Disabled" ScrollViewer.VerticalScrollBarVisibility="Auto" SelectionChanged="ListViewMenu_SelectionChanged">
+                            <ListViewItem Name="MyRequest" Height="50" ToolTip="나의 업무 목록" IsSelected="True">
+                                <StackPanel Orientation="Horizontal" Margin="5,0,0,0" >
+                                    <materialDesign:PackIcon Kind="AccountDetails" VerticalAlignment="Center" Height="25" Width="25"/>
+                                    <TextBlock Text="나의 업무 목록" VerticalAlignment="Center" Margin="15 5" />
+                                </StackPanel>
+                            </ListViewItem>
+                            <ListViewItem Name ="AllRequest" Height="50" ToolTip="전체 업무 목록">
+                                <StackPanel Orientation="Horizontal" Margin="5,0,0,0">
+                                    <materialDesign:PackIcon Kind="AccountGroup" VerticalAlignment="Center" Height="25" Width="25"/>
+                                    <TextBlock Text="전체 업무 목록" VerticalAlignment="Center" Margin="15 5" />
+                                </StackPanel>
+                            </ListViewItem>
+                        </ListView>
+                    </DockPanel>
+                </Grid>
+
+                <!-- Content -->
+                <Grid Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    <materialDesign:ColorZone x:Name="TopPanel" Mode="Light" Padding="16" materialDesign:ShadowAssist.ShadowDepth="Depth1" Margin="0" Grid.Row="0" Height="55" Visibility="Collapsed">
+                        <Grid>
+                            <TextBlock x:Name="UserName"  VerticalAlignment="Center" HorizontalAlignment="Right" Margin="16 0 0 0"/>
+                        </Grid>
+                    </materialDesign:ColorZone>
+                    <Frame x:Name="mainFrame" NavigationUIVisibility="Hidden" Grid.Row="1" />
+                </Grid>
+            </Grid>
+            <!-- Overlay-->
+            <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}"/>
+            <ContentControl x:Name="popup" Visibility="Collapsed">
+                <i:Interaction.Behaviors>
+                    <customcontrols:DragBehavior/>
+                </i:Interaction.Behaviors>
+            </ContentControl>
+        </Grid>
+    </Border>
 </Window>

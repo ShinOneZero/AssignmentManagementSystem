@@ -100,14 +100,18 @@
 
             <!--Custom Id textbox-->
             <CustomControls:TextBoxWithPlaceHolder 
+                x:Name="UserId"
                 Grid.Row="1" 
-                PlaceHolder="아이디"/>
+                PlaceHolder="아이디"
+                KeyDown="Check_KeyDown"/>
 
             <!--Password TextBox-->
-            <CustomControls:TextBoxWithPlaceHolder 
+            <CustomControls:TextBoxWithPlaceHolder
+                x:Name="UserPassword"
                 Grid.Row="2"
                 PlaceHolder="비밀번호"
-                IsPassword="True"/>
+                IsPassword="True"
+                KeyDown="Check_KeyDown"/>
 
             <Grid
                 Grid.Row="3"

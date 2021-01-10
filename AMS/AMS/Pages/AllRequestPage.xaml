@@ -1,0 +1,119 @@
+﻿<Page x:Class="AMS.Pages.AllRequestPage"
+      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+      xmlns:local="clr-namespace:AMS.Pages" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+      mc:Ignorable="d" 
+      d:DesignHeight="450" d:DesignWidth="800"
+      Background="WhiteSmoke"
+      Title="AllRequestPage">
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <TextBlock Text="전체 업무 목록" FontSize="24" Grid.Row="0" Foreground="#FF545D6E"/>
+        <Grid Background="#FFFFFF" Margin="0, 15" Grid.Row="1">
+            <DockPanel>
+                <!-- 상단바 -->
+                <Grid DockPanel.Dock="Top">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="SearchDetailButton" Click="SearchDetailButton_Click" HorizontalAlignment="Left" VerticalAlignment="Top" Margin="15,15,5,15" Width="120">
+                        <ContentControl>
+                            <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                <TextBlock Text="상세검색"  FontSize="12" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </ContentControl>
+                    </Button>
+                    <StackPanel Orientation="Horizontal" Grid.Column="1" HorizontalAlignment="Right">
+                        <!-- 검색바 -->
+                        <materialDesign:ColorZone Padding="8 4 8 4" CornerRadius="2" Margin="15, 15"  Panel.ZIndex="1" materialDesign:ShadowAssist.ShadowDepth="Depth1"
+                                                        HorizontalAlignment="Right" Width="350" Height="32">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto" />
+                                    <ColumnDefinition Width="*" />
+                                </Grid.ColumnDefinitions>
+                                <Button x:Name="SearchKeywordButtton" Click="SearchKeywordButtton_Click_1" Style="{DynamicResource MaterialDesignToolButton}" VerticalAlignment="Center">
+                                    <materialDesign:PackIcon Kind="Magnify" Opacity=".56" />
+                                </Button>
+                                <TextBox x:Name="tbx_SearchText"
+                                         Text=""
+                                         Grid.Column="1" Margin="8 0 0 0" materialDesign:HintAssist.Hint="업무명/내용/담당자 검색"
+                                         materialDesign:TextFieldAssist.DecorationVisibility="Hidden"
+                                         BorderThickness="0"
+                                         MinWidth="200"
+                                         VerticalAlignment="Center"
+                                         KeyDown="tbx_SearchText_KeyDown">
+                                </TextBox>
+                            </Grid>
+                        </materialDesign:ColorZone>
+                    </StackPanel>
+                </Grid>
+                <materialDesign:Card Margin="15" DockPanel.Dock="Bottom">
+                    <StackPanel Orientation="Vertical">
+                        <Button x:Name="ExportButton" Click="ExportButton_Click" Margin="10" Grid.Column="1" Width="100"  HorizontalAlignment="Right" VerticalAlignment="Center">
+                            <ContentControl>
+                                <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                    <TextBlock Text="Export"  FontSize="12" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </ContentControl>
+                        </Button>
+
+                        <!-- 업무 리스트 -->
+                        <DataGrid   x:Name="AllRequestList"   
+                                        Margin="10"
+                                        GridLinesVisibility="Horizontal"
+                                        HeadersVisibility="Column"
+                                        SelectionMode="Extended"
+                                        CanUserAddRows="False"
+                                        CanUserSortColumns="True"
+                                        CanUserDeleteRows="False"
+                                        CanUserResizeColumns="False"
+                                        CanUserResizeRows="False"
+                                        AutoGenerateColumns="False"
+                                        SelectionUnit="FullRow"
+                                        PreviewMouseLeftButtonUp="AllRequestList_PreviewMouseLeftButtonUp">
+                            <DataGrid.Resources>
+                                <Style x:Key="GridCellStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
+                                    <Setter Property="VerticalAlignment" Value="Center"/>
+                                    <Setter Property="TextAlignment" Value="Center"/>
+                                </Style>
+                                <Style x:Key="GridHeadStyle" TargetType="DataGridColumnHeader" BasedOn="{StaticResource {x:Type DataGridColumnHeader}}">
+                                    <Setter Property="HorizontalAlignment" Value="Center"/>
+                                </Style>
+                            </DataGrid.Resources>
+                            <DataGrid.RowStyle>
+                                <Style TargetType="DataGridRow" BasedOn="{StaticResource {x:Type DataGridRow}}">
+                                    <Setter Property="Background" Value="White"/>
+                                </Style>
+                            </DataGrid.RowStyle>
+                            <DataGrid.Columns>
+                                <DataGridTextColumn Header="구분" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
+                                <DataGridTextColumn Header="품질관리 업무명" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="*"/>
+                                <DataGridTextColumn Header="요청자" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
+                                <DataGridTextColumn Header="수행자" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
+                                <DataGridTextColumn Header="접수일" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="200"/>
+                            </DataGrid.Columns>
+                            <DataGrid.CellStyle>
+                                <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">
+                                    <Style.Triggers>
+                                        <Trigger Property="IsSelected" Value="True">
+                                            <Setter Property="Background" Value="Transparent"/>
+                                            <Setter Property="Foreground" Value="Black"/>
+                                            <Setter Property="BorderBrush" Value="Transparent"/>
+                                        </Trigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </DataGrid.CellStyle>
+                        </DataGrid>
+                    </StackPanel>
+                </materialDesign:Card>
+            </DockPanel>
+        </Grid>
+    </Grid>
+</Page>

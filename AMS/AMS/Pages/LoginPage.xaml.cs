@@ -1,4 +1,5 @@
 ﻿using AMS.CustomControls;
+using AMS.Database;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,19 +38,54 @@ namespace AMS.Pages
             InitializeComponent();
             DataContext = this;
             forgetPasswordCommand = new DelegateCommand( x=> ForgetPassword(x));
+
+            this.UserId.FocusItem();
         }
         //Show Main Page on Login Button Click
         
         private void LoginButton_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.mainFrame.Navigate(new Uri("/Pages/DashboardPage.xaml", UriKind.RelativeOrAbsolute));
+            Login();
+        }
+
+        private void Login()
+        {
+            DataBase db = new DataBase();
+
+            if (String.IsNullOrEmpty(UserId.Text))
+            {
+                MessageBox.Show("아이디를 입력해주세요", "알림", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+            else if (String.IsNullOrEmpty(UserPassword.passBox.Password))
+            {
+                MessageBox.Show("비밀번호를 입력해주세요", "알림", MessageBoxButton.OK, MessageBoxImage.Error);
+                return;
+            }
+
+            var userInfo = db.RequestData("SELECT * FROM USER_INFO WHERE ID = '" + UserId.Text + "' AND PASSWORD = '" + UserPassword.passBox.Password + "';");
+
+            if (userInfo.Rows.Count > 0)
+            {
+                mainWindow.InitPage(userInfo);
+            }
+            else
+            {
+                MessageBox.Show("사용자 정보가 일치하지 않습니다.", "알림", MessageBoxButton.OK, MessageBoxImage.Error);
+            }
         }
 
         private void ForgetPassword(object e)
         {
+            mainWindow.popup.Content = new ForgetPasswordWindow();
             mainWindow.Overlay.Visibility = Visibility.Visible;
             mainWindow.popup.Visibility = Visibility.Visible;
-            mainWindow.popup.Content = new ForgetPasswordWindow();
+        }
+
+        private void Check_KeyDown(object sender, KeyEventArgs e)
+        {
+            if(e.Key == Key.Enter)
+                Login();
         }
     }
 }
