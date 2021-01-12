@@ -71,6 +71,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="CustomControls\DetailRequestInfoView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="CustomControls\ForgetPasswordWindow.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -91,8 +95,12 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="CustomClass\RequestInfo.cs" />
     <Compile Include="CustomControls\CircularProgressBar.xaml.cs">
       <DependentUpon>CircularProgressBar.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="CustomControls\DetailRequestInfoView.xaml.cs">
+      <DependentUpon>DetailRequestInfoView.xaml</DependentUpon>
     </Compile>
     <Compile Include="CustomControls\DragBehavior.cs" />
     <Compile Include="CustomControls\ForgetPasswordWindow.xaml.cs">

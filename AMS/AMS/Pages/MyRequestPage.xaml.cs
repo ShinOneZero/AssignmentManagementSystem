@@ -1,4 +1,5 @@
-﻿using AMS.CustomControls;
+﻿using AMS.CustomClass;
+using AMS.CustomControls;
 using AMS.Database;
 using System;
 using System.Collections.Generic;
@@ -91,7 +92,9 @@ namespace AMS.Pages
 
         private void AddRequestButton_Click(object sender, RoutedEventArgs e)
         {
-
+            mainWindow.popup.Content = new DetailRequestInfoView(null);
+            mainWindow.Overlay.Visibility = Visibility.Visible;
+            mainWindow.popup.Visibility = Visibility.Visible;
         }
     }
 }
