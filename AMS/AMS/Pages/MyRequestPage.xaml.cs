@@ -92,7 +92,7 @@ namespace AMS.Pages
 
         private void AddRequestButton_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.popup.Content = new DetailRequestInfoView(null);
+            mainWindow.popup.Content = new DetailRequestInfoView(null, VIEW_MODE.WRITE_MODE);
             mainWindow.Overlay.Visibility = Visibility.Visible;
             mainWindow.popup.Visibility = Visibility.Visible;
         }

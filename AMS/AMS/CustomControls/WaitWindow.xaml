@@ -5,11 +5,12 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:AMS.CustomControls"
              mc:Ignorable="d" 
-             Width="200" Height="70"
+             Width="250" Height="70"
              Background="White">
-    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
+    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center" Margin="5">
         <local:CircularProgressBar Width="30"/>
-        <TextBlock  Text="Loading..." 
+        <TextBlock  x:Name="Message"
+                        Text="Loading..." 
                         FontSize="16"
                         Margin="20, 0"
                         VerticalAlignment="Center"/>

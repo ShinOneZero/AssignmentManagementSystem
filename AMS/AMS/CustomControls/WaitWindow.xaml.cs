@@ -24,5 +24,11 @@ namespace AMS.CustomControls
         {
             InitializeComponent();
         }
+
+        public WaitWindow(string message)
+        {
+            InitializeComponent();
+            Message.Text = message;
+        }
     }
 }

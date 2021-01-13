@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 
 namespace AMS.CustomClass
 {
+    public enum VIEW_MODE
+    {
+        READ_MODE=0,
+        WRITE_MODE
+    }
     public class RequestInfo
     {
         public string Request_No { get; set; }
-        public string Request_State { get; set; }
+        public int Request_State { get; set; }
 
         public DateTime Request_Date { get; set; }
         public DateTime Creation_TimeStamp { get; set; }

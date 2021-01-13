@@ -19,6 +19,11 @@ namespace AMS.Database
             m_Connector = new OleDbConnection();
         }
 
+        public OleDbConnection GetConnection()
+        {
+            return m_Connector;
+        }
+
         public void ConnectDatebase()
         {
             try
@@ -51,6 +56,22 @@ namespace AMS.Database
             {
                 ConnectDatebase();
                 OleDbCommand command = new OleDbCommand(sql, m_Connector);
+                command.ExecuteNonQuery();
+                DisconnectDataBase();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Unable to Request SQL : " + ex.Message);
+            }
+        }
+
+        public void RequestSQL(OleDbCommand cmd)
+        {
+            try
+            {
+                ConnectDatebase();
+                OleDbCommand command = cmd;
+                command.Connection = m_Connector;
                 command.ExecuteNonQuery();
                 DisconnectDataBase();
             }
