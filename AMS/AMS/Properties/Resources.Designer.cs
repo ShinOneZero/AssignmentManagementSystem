@@ -69,5 +69,29 @@ namespace AMS.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   &lt;!DOCTYPE html PUBLIC &quot;-//W3C//DTD HTML 4.01//EN&quot; &quot;http://www.w3.org/TR/html4/strict.dtd&quot;&gt;
+        ///&lt;html&gt;
+        ///&lt;head&gt;
+        ///    &lt;meta content=&quot;text/html; charset=ISO-8859-1&quot; http-equiv=&quot;content-type&quot;&gt;
+        ///    &lt;title&gt;new&lt;/title&gt;
+        ///
+        ///    &lt;style type=&quot;text/css&quot;&gt;
+        ///        p {
+        ///            margin-bottom: 0;
+        ///            margin-top: 0;
+        ///        }
+        ///    &lt;/style&gt;
+        ///&lt;/head&gt;
+        ///&lt;body&gt;
+        ///&lt;/body&gt;
+        ///&lt;/html&gt;과(와) 유사한 지역화된 문자열을 찾습니다.
+        /// </summary>
+        internal static string New {
+            get {
+                return ResourceManager.GetString("New", resourceCulture);
+            }
+        }
     }
 }

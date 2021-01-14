@@ -1,4 +1,5 @@
 ﻿using AMS.CustomClass;
+using AMS.CustomEditor;
 using AMS.Database;
 using System;
 using System.Collections.Generic;
@@ -26,21 +27,24 @@ namespace AMS.CustomControls
         private MainWindow mainWindow { get => Application.Current.MainWindow as MainWindow; }
         private DataBase db = new DataBase();
         private RequestInfo m_RequestInfo;
+        private VIEW_MODE m_Mode;
 
         public DetailRequestInfoView(RequestInfo requestInfo, VIEW_MODE mode)
         {
             InitializeComponent();
+            m_RequestInfo = requestInfo;
+            m_Mode = mode;
+        }
 
-            if(requestInfo != null)
-            {
-                m_RequestInfo = requestInfo;
-            }
-            else
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            if(m_RequestInfo == null)
             {
                 m_RequestInfo = new RequestInfo();
                 m_RequestInfo.Request_No = db.RequestData("SELECT IIF(MAX(IIF(LEFT(REQUEST_NO, 2) = FORMAT(DATE(), \"YY\"), REQUEST_NO, NULL))<>NULL, " +
                                                                              "MAX(IIF(LEFT(REQUEST_NO, 2) = FORMAT(DATE(), \"YY\"), LEFT(REQUEST_NO, 2) & \"-\" & FORMAT(RIGHT(REQUEST_NO, 4)+1, \"0000\"), NULL)), " +
-                                                                             "(FORMAT(DATE(), \"YY\")+1) & \"-0001\") AS REQUEST_NO FROM REQUEST_INFO").Rows[0]["REQUEST_NO"].ToString();
+                                                                             "IIF(COUNT(REQUEST_NO) = 0, (FORMAT(DATE(), \"YY\")) & \"-0001\", " +
+                                                                             "(FORMAT(DATE(), \"YY\")+1) & \"-0001\")) AS REQUEST_NO FROM REQUEST_INFO").Rows[0]["REQUEST_NO"].ToString();
                 m_RequestInfo.Creation_TimeStamp = DateTime.Now;
                 m_RequestInfo.Last_Update_TimeStamp = DateTime.Now;
                 m_RequestInfo.Request_Date = DateTime.Now;
@@ -62,10 +66,10 @@ namespace AMS.CustomControls
                 RequesterName.Text = m_RequestInfo.Requester_Emp_Name + "("
                     + db.RequestData("SELECT DEPORTMENT FROM USER_INFO WHERE USER_NO = " + m_RequestInfo.Requester_Emp_No).Rows[0]["DEPORTMENT"].ToString() + ")";
 
-                if (m_RequestInfo.Title != null)
+                if (!String.IsNullOrEmpty(m_RequestInfo.Title))
                     Title.Text = m_RequestInfo.Title;
 
-                if(m_RequestInfo.Product != null)
+                if(!String.IsNullOrEmpty(m_RequestInfo.Product))
                 {
                     var arr = m_RequestInfo.Product.ToArray();
                     for (int i=0; i < arr.Length; i++)
@@ -100,19 +104,20 @@ namespace AMS.CustomControls
                     }
                 }
 
-                if (m_RequestInfo.R_Conent != null) ;
+                if (!String.IsNullOrEmpty(m_RequestInfo.R_Content))
+                    RequestContent.SetHTML(m_RequestInfo.R_Content);
 
-                if (m_RequestInfo.Process_Start_Date != DateTime.MinValue)
+                if (m_RequestInfo.Process_Start_Date != DateTime.MinValue || m_RequestInfo.Process_Start_Date != null)
                     ProcessStartDate.SelectedDate = m_RequestInfo.Process_Start_Date;
 
-                if (m_RequestInfo.Process_End_Date != DateTime.MinValue)
+                if (m_RequestInfo.Process_End_Date != DateTime.MinValue || m_RequestInfo.Process_End_Date != null)
                     ProcessEndDate.SelectedDate = m_RequestInfo.Process_End_Date;
 
-                if (m_RequestInfo.Performer_Emp_Name != null)
+                if (!String.IsNullOrEmpty(m_RequestInfo.Performer_Emp_Name))
                     ProcesserName.Text = m_RequestInfo.Performer_Emp_Name + "("
                         + db.RequestData("SELECT DEPORTMENT FROM USER_INFO WHERE USER_NO = " + m_RequestInfo.Performer_Emp_No).Rows[0]["DEPORTMENT"].ToString() + ")";
 
-                if (m_RequestInfo.P_Content != null) ;
+                if (!String.IsNullOrEmpty(m_RequestInfo.P_Content)) ;
             }
         }
 
@@ -163,24 +168,33 @@ namespace AMS.CustomControls
             popup.Visibility = Visibility.Visible;
 
             string no = null;
-            var data = db.RequestData("SELECT * FROM REQUEST_INFO WHERE REQUEST_NO = " + m_RequestInfo.Request_No);
+            var data = db.RequestData("SELECT * FROM REQUEST_INFO WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
 
             if (data.Rows.Count == 1)
                 no = data.Rows[0]["REQUEST_NO"].ToString();
 
-            // 제품정보가져오기
-            GetProductInfo();
+            GetRequestInfo();
 
             // 수정
             if (no != null)
             {
-                db.RequestSQL("UPDATE REQUEST_INFO SET " +
-                                    "LAST_UPDATE_TIMESTAMP = " + DateTime.Now +
-                                    "REQUEST_END_DATE = " + DateTime.Now +
-                                    "TITLE = " + m_RequestInfo.Title +
-                                    "R_CONTENT = " + m_RequestInfo.R_Conent +
-                                    "REQUEST_HOPE_END_DATE = " + m_RequestInfo.Request_Hope_End_Date +
-                                    "WHERE REQUEST_NO = " + m_RequestInfo.Request_No); ;
+                OleDbCommand cmd = new OleDbCommand("UPDATE REQUEST_INFO SET " +
+                                                                            "LAST_UPDATE_TIMESTAMP = @value1, " +
+                                                                            "REQUEST_END_DATE = @value2, " +
+                                                                            "TITLE = @value3, " +
+                                                                            "R_CONTENT = @value4, " +
+                                                                            "REQUEST_HOPE_END_DATE = @value5, " +
+                                                                            "PRODUCT = @value6 " +
+                                                                            "WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
+
+                cmd.Parameters.AddWithValue("@value1", DateTime.Now.ToString());
+                cmd.Parameters.AddWithValue("@value2", DateTime.Now.ToString());
+                cmd.Parameters.AddWithValue("@value3", m_RequestInfo.Title);
+                cmd.Parameters.AddWithValue("@value4", m_RequestInfo.R_Content);
+                cmd.Parameters.AddWithValue("@value5", m_RequestInfo.Request_Hope_End_Date.ToString());
+                cmd.Parameters.AddWithValue("@value6", m_RequestInfo.Product);
+
+                db.RequestSQL(cmd);
                 popup.Content = null;
                 Overlay.Visibility = Visibility.Collapsed;
                 popup.Visibility = Visibility.Collapsed;
@@ -190,26 +204,23 @@ namespace AMS.CustomControls
             // 접수
             else
             {
-                /*
                 OleDbCommand cmd = new OleDbCommand("INSERT INTO REQUEST_INFO (REQUEST_NO, REQUEST_DATE, CREATION_TIMESTAMP, LAST_UPDATE_TIMESTAMP, REQUEST_STATE, " +
-                                                                            "REQUEST_END_DATE, PRODUCT, REQUESTER_EMP_NO, TITLE, R_CONTENTREQUEST_HOPE_END_DATE" +
-                                                                            ") VALUES (@value)");
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Request_No);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Request_Date);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Creation_TimeStamp);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Last_Update_TimeStamp);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Request_State);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Request_End_Date);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Product);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Requester_Emp_No);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Title);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.R_Conent);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Request_Hope_End_Date);
-                */
-                OleDbCommand cmd = new OleDbCommand("INSERT INTO REQUEST_INFO (REQUEST_NO, REQUEST_DATE" +
-                                                            ") VALUES (@value)");
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Request_No);
-                cmd.Parameters.AddWithValue("@value", m_RequestInfo.Creation_TimeStamp.ToString("yyyy-MM-dd HH:mm:ss"));
+                                                                            "REQUEST_END_DATE, PRODUCT, REQUESTER_EMP_NO, TITLE, R_CONTENT, REQUEST_HOPE_END_DATE, P_CONTENT, PERFORMER_EMP_NO" +
+                                                                            ") VALUES (@value1,@value2,@value3,@value4,@value5,@value6,@value7,@value8,@value9,@value10,@value11, @value12, @value13)");
+                cmd.Parameters.AddWithValue("@value1", m_RequestInfo.Request_No);
+                cmd.Parameters.AddWithValue("@value2", m_RequestInfo.Request_Date.ToString());
+                cmd.Parameters.AddWithValue("@value3", m_RequestInfo.Creation_TimeStamp.ToString());
+                cmd.Parameters.AddWithValue("@value4", m_RequestInfo.Last_Update_TimeStamp.ToString());
+                cmd.Parameters.AddWithValue("@value5", m_RequestInfo.Request_State);
+                cmd.Parameters.AddWithValue("@value6", m_RequestInfo.Request_End_Date.ToString());
+                cmd.Parameters.AddWithValue("@value7", m_RequestInfo.Product);
+                cmd.Parameters.AddWithValue("@value8", m_RequestInfo.Requester_Emp_No);
+                cmd.Parameters.AddWithValue("@value9", m_RequestInfo.Title);
+                cmd.Parameters.AddWithValue("@value10", m_RequestInfo.R_Content);
+                cmd.Parameters.AddWithValue("@value11", m_RequestInfo.Request_Hope_End_Date);
+                cmd.Parameters.AddWithValue("@value12", m_RequestInfo.P_Content);
+                cmd.Parameters.AddWithValue("@value13", m_RequestInfo.Performer_Emp_No);
+
                 db.RequestSQL(cmd);
                 popup.Content = null;
                 Overlay.Visibility = Visibility.Collapsed;
@@ -218,8 +229,16 @@ namespace AMS.CustomControls
             }
         }
 
-        private void GetProductInfo()
+        private void GetRequestInfo()
         {
+            m_RequestInfo.Last_Update_TimeStamp = DateTime.Now;
+            m_RequestInfo.Request_End_Date = DateTime.Now;
+            m_RequestInfo.Request_Hope_End_Date = (DateTime)RequestHopeEndDate.SelectedDate;
+            m_RequestInfo.Title = Title.Text;
+            m_RequestInfo.R_Content = RequestContent.GetHTML();
+            m_RequestInfo.P_Content = ProcessContent.GetHTML();
+
+            #region GetProductInfo
             if ((bool)Product1.IsChecked) m_RequestInfo.Product = "1";
             else m_RequestInfo.Product = "0";
 
@@ -240,16 +259,103 @@ namespace AMS.CustomControls
 
             if ((bool)Product7.IsChecked) m_RequestInfo.Product += "1";
             else m_RequestInfo.Product += "0";
+            #endregion
+        }
+
+        private void GetPerforInfo()
+        {
+            m_RequestInfo.Last_Update_TimeStamp = DateTime.Now;
+
+            if(m_RequestInfo.Request_State == 1)
+            {
+                m_RequestInfo.Process_Start_Date = ProcessStartDate.SelectedDate;
+            }
+
+            m_RequestInfo.Performer_Emp_Name = ProcesserName.Text;
+            var data = db.RequestData("SELECT EMP_NO FROM USER_INFO WHERE USER_NAME = '" + m_RequestInfo.Performer_Emp_Name + "'");
+
+            if (data.Rows.Count == 1)
+                m_RequestInfo.Performer_Emp_No = int.Parse(data.Rows[0]["EMP_NO"].ToString());
+            else
+            {
+                MessageBox.Show("유효하지 않은 처리자입니다.");
+            }
+            m_RequestInfo.P_Content = ProcessContent.GetHTML();
         }
 
         private void ProcessEditButton_Click(object sender, RoutedEventArgs e)
         {
+            GetPerforInfo();
 
+            // 처음 처리 등록
+            if (m_RequestInfo.Request_State == 1)
+            {
+                m_RequestInfo.Request_State = 2;
+
+                OleDbCommand cmd = new OleDbCommand("UPDATE REQUEST_INFO SET " +
+                                                                            "LAST_UPDATE_TIMESTAMP = @value1, " +
+                                                                            "PROCESS_START_DATE = @value2, " +
+                                                                            "REQUEST_STATE = @value3, " +
+                                                                            "P_CONTENT = @value4, " +
+                                                                            "PERFORMER_EMP_NO = @value5 " +
+                                                                            "WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
+
+                cmd.Parameters.AddWithValue("@value1", DateTime.Now.ToString());
+                cmd.Parameters.AddWithValue("@value2", DateTime.Now.ToString());
+                cmd.Parameters.AddWithValue("@value3", m_RequestInfo.Request_State);
+                cmd.Parameters.AddWithValue("@value4", m_RequestInfo.P_Content);
+                cmd.Parameters.AddWithValue("@value5", m_RequestInfo.Performer_Emp_No);
+
+                db.RequestSQL(cmd);
+
+                popup.Content = null;
+                Overlay.Visibility = Visibility.Collapsed;
+                popup.Visibility = Visibility.Collapsed;
+                MessageBox.Show("처리내용이 저장되었습니다.");
+            }
+            else
+            {
+                OleDbCommand cmd = new OleDbCommand("UPDATE REQUEST_INFO SET " +
+                                                            "LAST_UPDATE_TIMESTAMP = @value1, " +
+                                                            "P_CONTENT = @value2, " +
+                                                            "WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
+
+                cmd.Parameters.AddWithValue("@value1", DateTime.Now.ToString());
+                cmd.Parameters.AddWithValue("@value2", m_RequestInfo.P_Content);
+
+                db.RequestSQL(cmd);
+
+                popup.Content = null;
+                Overlay.Visibility = Visibility.Collapsed;
+                popup.Visibility = Visibility.Collapsed;
+                MessageBox.Show("처리내용이 수정되었습니다.");
+            }
         }
 
         private void ProcessComplete_Click(object sender, RoutedEventArgs e)
         {
+            GetPerforInfo();
 
+            m_RequestInfo.Request_State = 3;
+
+            OleDbCommand cmd = new OleDbCommand("UPDATE REQUEST_INFO SET " +
+                                                                        "LAST_UPDATE_TIMESTAMP = @value1, " +
+                                                                        "PROCESS_END_DATE = @value2, " +
+                                                                        "REQUEST_STATE = @value3, " +
+                                                                        "P_CONTENT = @value4, " +
+                                                                        "WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
+
+            cmd.Parameters.AddWithValue("@value1", DateTime.Now.ToString());
+            cmd.Parameters.AddWithValue("@value2", DateTime.Now.ToString());
+            cmd.Parameters.AddWithValue("@value3", m_RequestInfo.Request_State);
+            cmd.Parameters.AddWithValue("@value4", m_RequestInfo.P_Content);
+
+            db.RequestSQL(cmd);
+
+            popup.Content = null;
+            Overlay.Visibility = Visibility.Collapsed;
+            popup.Visibility = Visibility.Collapsed;
+            MessageBox.Show("요청업무가 완료 처리되었습니다.");
         }
     }
 }

@@ -3,10 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AMS.CustomControls" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
+             xmlns:local="clr-namespace:AMS.CustomControls" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:customeditor="clr-namespace:AMS.CustomEditor"
              mc:Ignorable="d" 
-             d:DesignHeight="800" d:DesignWidth="1200"
-             Background="White">
+             d:DesignHeight="1000" d:DesignWidth="1200"
+             Background="White" Loaded="UserControl_Loaded">
     <UserControl.Resources>
         <Style x:Key="OverlayStyle" TargetType="{x:Type Border}">
             <Setter Property="Background" Value="Black"/>
@@ -36,91 +36,92 @@
         </Style>
     </UserControl.Resources>
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="*"/>
-        </Grid.RowDefinitions>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
 
-        <Grid VerticalAlignment="Top"
+            <Grid VerticalAlignment="Top"
             HorizontalAlignment="Stretch"
             Height="50"
             Background="#585858"
               Grid.Row="0">
-            <TextBlock Text="품질관리 업무 상세 내용"
+                <TextBlock Text="품질관리 업무 상세 내용"
                        Foreground="White"
                         VerticalAlignment="Center"
                         HorizontalAlignment="Left"
                         FontSize="24"
                         Margin="20, 0"/>
-            <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
-                <Button HorizontalAlignment="Left" VerticalAlignment="Center"  Width="40" Height="40" Padding="0" Background="{x:Null}" BorderBrush="{x:Null}">
-                    <Button x:Name="ExitButton" Style="{DynamicResource MaterialDesignToolButton}" Click="ExitButton_Click">
-                        <materialDesign:PackIcon Kind="Close" Width="25" Height="25" Foreground="White"/>
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" HorizontalAlignment="Right">
+                    <Button HorizontalAlignment="Left" VerticalAlignment="Center"  Width="40" Height="40" Padding="0" Background="{x:Null}" BorderBrush="{x:Null}">
+                        <Button x:Name="ExitButton" Style="{DynamicResource MaterialDesignToolButton}" Click="ExitButton_Click">
+                            <materialDesign:PackIcon Kind="Close" Width="25" Height="25" Foreground="White"/>
+                        </Button>
                     </Button>
-                </Button>
-            </StackPanel>
-        </Grid>
+                </StackPanel>
+            </Grid>
 
-        <ScrollViewer IsDeferredScrollingEnabled="True" VerticalScrollBarVisibility="Auto"  Grid.Row="1">
-            <Grid>
-                <DockPanel Margin="30">
-                    <!-- 접수 -->
-                    <Border BorderThickness="1"
+            <ScrollViewer IsDeferredScrollingEnabled="True" VerticalScrollBarVisibility="Auto"  Grid.Row="1">
+                <Grid>
+                    <DockPanel Margin="30">
+                        <!-- 접수 -->
+                        <Border BorderThickness="1"
                             DockPanel.Dock="Top"
                             BorderBrush="#FFB0B0B0"
                             Height="Auto">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="1"/>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="1"/>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="1"/>
-                                <RowDefinition Height="300"/>
-                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="1"/>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="1"/>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="1"/>
+                                    <RowDefinition Height="300"/>
+                                </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="0" Background="LightGray">
-                                <TextBlock Text="접   수"
+                                <Grid Grid.Row="0" Background="LightGray">
+                                    <TextBlock Text="접   수"
                                         FontSize="20"
                                         Foreground="Black"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         FontWeight="Bold"/>
-                            </Grid>
-                            <Grid Grid.Row="1" Background="#FFB0B0B0" />
-                            <Grid Grid.Row="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                </Grid.ColumnDefinitions>
+                                </Grid>
+                                <Grid Grid.Row="1" Background="#FFB0B0B0" />
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Grid Grid.Column="0" Background='LightGray'>
-                                    <TextBlock Text="접수번호"
+                                    <Grid Grid.Column="0" Background='LightGray'>
+                                        <TextBlock Text="접수번호"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="1" >
-                                    <TextBlock x:Name="RequestNo"
+                                    </Grid>
+                                    <Grid Grid.Column="1" >
+                                        <TextBlock x:Name="RequestNo"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="2" Background='LightGray'>
-                                    <TextBlock Text="신청일"
+                                    </Grid>
+                                    <Grid Grid.Column="2" Background='LightGray'>
+                                        <TextBlock Text="신청일"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="3" >
-                                    <DatePicker Name="RequestDate" 
+                                    </Grid>
+                                    <Grid Grid.Column="3" >
+                                        <DatePicker Name="RequestDate" 
                                                  IsEnabled="False" 
                                                  Margin="20, 0" 
                                                  Width="150" 
@@ -130,27 +131,27 @@
                                                  VerticalAlignment="Center"
                                                  VerticalContentAlignment="Center"
                                                  FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="4" Background='LightGray'>
-                                    <TextBlock Text="접수자(소속)"
+                                    </Grid>
+                                    <Grid Grid.Column="4" Background='LightGray'>
+                                        <TextBlock Text="접수자(소속)"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="5" >
-                                    <TextBlock x:Name="RequesterName"
+                                    </Grid>
+                                    <Grid Grid.Column="5" >
+                                        <TextBlock x:Name="RequesterName"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="6" Background='LightGray'>
-                                    <TextBlock Text="완료희망일"
+                                    </Grid>
+                                    <Grid Grid.Column="6" Background='LightGray'>
+                                        <TextBlock Text="완료희망일"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="7" >
-                                    <DatePicker Name="RequestHopeEndDate" 
+                                    </Grid>
+                                    <Grid Grid.Column="7" >
+                                        <DatePicker Name="RequestHopeEndDate" 
                                                  IsEnabled="True" 
                                                  Margin="20, 0" 
                                                  Width="150" 
@@ -160,142 +161,132 @@
                                                  VerticalAlignment="Center"
                                                  VerticalContentAlignment="Center"
                                                  FontSize="16"/>
+                                    </Grid>
                                 </Grid>
-                            </Grid>
-                            <Grid Grid.Row="3" Background="#FFB0B0B0" />
-                            <Grid Grid.Row="4">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="*"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="400"/>
-                                </Grid.ColumnDefinitions>
+                                <Grid Grid.Row="3" Background="#FFB0B0B0" />
+                                <Grid Grid.Row="4">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="400"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Grid Grid.Column="0" Background='LightGray'>
-                                    <TextBlock Text="제목"
+                                    <Grid Grid.Column="0" Background='LightGray'>
+                                        <TextBlock Text="제목"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="1" >
-                                    <TextBox x:Name="Title"
+                                    </Grid>
+                                    <Grid Grid.Column="1" >
+                                        <TextBox x:Name="Title"
                                              HorizontalAlignment="Stretch"
                                              VerticalAlignment="Center"
                                              FontSize="16"
                                              Margin="5" />
-                                </Grid>
-                                <Grid Grid.Column="2" Background='LightGray'>
-                                    <TextBlock Text="적용제품"
+                                    </Grid>
+                                    <Grid Grid.Column="2" Background='LightGray'>
+                                        <TextBlock Text="적용제품"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="3" >
-                                    <StackPanel Orientation="Horizontal"
+                                    </Grid>
+                                    <Grid Grid.Column="3" >
+                                        <StackPanel Orientation="Horizontal"
                                                  HorizontalAlignment="Center"
                                                  VerticalAlignment="Center">
-                                        <CheckBox x:Name="Product1"/>
-                                        <TextBlock Text="외판Slab" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
-                                        <CheckBox x:Name="Product2"/>
-                                        <TextBlock Text="열연" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
-                                        <CheckBox x:Name="Product3"/>
-                                        <TextBlock Text="냉연" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
-                                        <CheckBox x:Name="Product4"/>
-                                        <TextBlock Text="선재" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
-                                        <CheckBox x:Name="Product5"/>
-                                        <TextBlock Text="후판" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
-                                        <CheckBox x:Name="Product6"/>
-                                        <TextBlock Text="전강" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
-                                        <CheckBox x:Name="Product7"/>
-                                        <TextBlock Text="STS" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
-                                    </StackPanel>
+                                            <CheckBox x:Name="Product1"/>
+                                            <TextBlock Text="외판Slab" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                            <CheckBox x:Name="Product2"/>
+                                            <TextBlock Text="열연" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                            <CheckBox x:Name="Product3"/>
+                                            <TextBlock Text="냉연" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                            <CheckBox x:Name="Product4"/>
+                                            <TextBlock Text="선재" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                            <CheckBox x:Name="Product5"/>
+                                            <TextBlock Text="후판" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                            <CheckBox x:Name="Product6"/>
+                                            <TextBlock Text="전강" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                            <CheckBox x:Name="Product7"/>
+                                            <TextBlock Text="STS" VerticalAlignment="Center" Margin="0, 0, 10, 0"/>
+                                        </StackPanel>
 
+                                    </Grid>
+                                </Grid>
+                                <Grid Grid.Row="5" Background="#FFB0B0B0" />
+                                <Grid Grid.Row="6">
+                                    <customeditor:WebEditor
+                                                x:Name="RequestContent"
+                                                Margin="5"
+                                                FontSize="16"/>
                                 </Grid>
                             </Grid>
-                            <Grid Grid.Row="5" Background="#FFB0B0B0" />
-                            <Grid Grid.Row="6">
-                                <RichTextBox x:Name="RequestContent"
-                                                Margin="5"
-                                                FontSize="16">
-                                    <RichTextBox.Resources>
-                                        <Style TargetType="{x:Type Paragraph}">
-                                            <Setter Property="Margin" Value="5"/>
-                                        </Style>
-                                    </RichTextBox.Resources>
-                                    <FlowDocument LineHeight="16" >
-                                        <Paragraph FontSize="16pt" LineHeight="16pt" LineStackingStrategy="BlockLineHeight">
+                        </Border>
 
-                                        </Paragraph>
-                                    </FlowDocument>
-                                </RichTextBox>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
-                    <!-- 접수버튼 -->
-                    <Grid DockPanel.Dock="Top"
+                        <!-- 접수버튼 -->
+                        <Grid DockPanel.Dock="Top"
                         Margin="0, 10">
-                        <StackPanel Orientation="Horizontal"
+                            <StackPanel Orientation="Horizontal"
                                      VerticalAlignment="Center"
                                      HorizontalAlignment="Right">
-                            <Button x:Name="RequestCancelButton" Width="100" Click="RequestCancelButton_Click">
-                                <ContentControl>
-                                    <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <TextBlock Text="접수취소"  FontSize="12" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </ContentControl>
-                            </Button>
-                            <Button x:Name="RequestEditButton" Width="100" Margin="20, 0" Click="RequestEditButton_Click">
-                                <ContentControl>
-                                    <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <TextBlock Text="수정/접수"  FontSize="12" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </ContentControl>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
+                                <Button x:Name="RequestCancelButton" Width="100" Click="RequestCancelButton_Click">
+                                    <ContentControl>
+                                        <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <TextBlock Text="접수취소"  FontSize="12" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ContentControl>
+                                </Button>
+                                <Button x:Name="RequestEditButton" Width="100" Margin="20, 0" Click="RequestEditButton_Click">
+                                    <ContentControl>
+                                        <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <TextBlock Text="수정/접수"  FontSize="12" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ContentControl>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
 
-                    <!-- 처리 -->
-                    <Border BorderThickness="1"
+                        <!-- 처리 -->
+                        <Border BorderThickness="1"
                             DockPanel.Dock="Top"
                             BorderBrush="#FFB0B0B0"
                             Height="Auto">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="1"/>
-                                <RowDefinition Height="40"/>
-                                <RowDefinition Height="1"/>
-                                <RowDefinition Height="300"/>
-                            </Grid.RowDefinitions>
+                            <Grid>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="1"/>
+                                    <RowDefinition Height="40"/>
+                                    <RowDefinition Height="1"/>
+                                    <RowDefinition Height="300"/>
+                                </Grid.RowDefinitions>
 
-                            <Grid Grid.Row="0" Background="LightGray">
-                                <TextBlock Text="처   리"
+                                <Grid Grid.Row="0" Background="LightGray">
+                                    <TextBlock Text="처   리"
                                         FontSize="20"
                                         Foreground="Black"
                                         VerticalAlignment="Center"
                                         HorizontalAlignment="Center"
                                         FontWeight="Bold"/>
-                            </Grid>
-                            <Grid Grid.Row="1" Background="#FFB0B0B0" />
-                            <Grid Grid.Row="2">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="200"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
+                                </Grid>
+                                <Grid Grid.Row="1" Background="#FFB0B0B0" />
+                                <Grid Grid.Row="2">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="200"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
 
-                                <Grid Grid.Column="0" Background='LightGray'>
-                                    <TextBlock Text="처리개시일"
+                                    <Grid Grid.Column="0" Background='LightGray'>
+                                        <TextBlock Text="처리개시일"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="1" >
-                                    <DatePicker Name="ProcessStartDate" 
+                                    </Grid>
+                                    <Grid Grid.Column="1" >
+                                        <DatePicker Name="ProcessStartDate" 
                                                  IsEnabled="False" 
                                                  Margin="20, 0" 
                                                  Width="150" 
@@ -305,15 +296,15 @@
                                                  VerticalAlignment="Center"
                                                  VerticalContentAlignment="Center"
                                                  FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="2" Background='LightGray'>
-                                    <TextBlock Text="처리완료일"
+                                    </Grid>
+                                    <Grid Grid.Column="2" Background='LightGray'>
+                                        <TextBlock Text="처리완료일"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="3" >
-                                    <DatePicker Name="ProcessEndDate"
+                                    </Grid>
+                                    <Grid Grid.Column="3" >
+                                        <DatePicker Name="ProcessEndDate"
                                                  IsEnabled="False" 
                                                  Margin="20, 0" 
                                                  Width="150" 
@@ -323,76 +314,65 @@
                                                  VerticalAlignment="Center"
                                                  VerticalContentAlignment="Center"
                                                  FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="4" Background='LightGray'>
-                                    <TextBlock Text="처리자"
+                                    </Grid>
+                                    <Grid Grid.Column="4" Background='LightGray'>
+                                        <TextBlock Text="처리자"
                                                 HorizontalAlignment="Center"
                                                 VerticalAlignment="Center"
                                                 FontSize="16"/>
-                                </Grid>
-                                <Grid Grid.Column="5" >
-                                    <TextBox x:Name="ProcesserName"
+                                    </Grid>
+                                    <Grid Grid.Column="5" >
+                                        <TextBox x:Name="ProcesserName"
                                              HorizontalAlignment="Center"
                                              VerticalAlignment="Center"
                                              FontSize="16"
                                              IsReadOnly="True"/>
+                                    </Grid>
+                                </Grid>
+                                <Grid Grid.Row="3" Background="#FFB0B0B0" />
+                                <Grid Grid.Row="4">
+                                    <customeditor:WebEditor
+                                                x:Name="ProcessContent"
+                                                Margin="5"
+                                                FontSize="16"/>
                                 </Grid>
                             </Grid>
-                            <Grid Grid.Row="3" Background="#FFB0B0B0" />
-                            <Grid Grid.Row="4">
-                                <RichTextBox x:Name="ProcessContent"
-                                                Margin="5"
-                                                FontSize="16">
-                                    <RichTextBox.Resources>
-                                        <Style TargetType="{x:Type Paragraph}">
-                                            <Setter Property="Margin" Value="5"/>
-                                        </Style>
-                                    </RichTextBox.Resources>
-                                    <FlowDocument LineHeight="16" >
-                                        <Paragraph FontSize="16pt" LineHeight="16pt" LineStackingStrategy="BlockLineHeight">
+                        </Border>
 
-                                        </Paragraph>
-                                    </FlowDocument>
-                                </RichTextBox>
-                            </Grid>
-                        </Grid>
-                    </Border>
-
-                    <!-- 처리버튼 -->
-                    <Grid DockPanel.Dock="Top"
+                        <!-- 처리버튼 -->
+                        <Grid DockPanel.Dock="Top"
                         Margin="0, 10">
-                        <StackPanel Orientation="Horizontal"
+                            <StackPanel Orientation="Horizontal"
                                      VerticalAlignment="Center"
                                      HorizontalAlignment="Right">
-                            <Button x:Name="ProcessEditButton" Width="100" Click="ProcessEditButton_Click">
-                                <ContentControl>
-                                    <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <TextBlock Text="수정"  FontSize="12" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </ContentControl>
-                            </Button>
-                            <Button x:Name="ProcessComplete" Width="100" Margin="20, 0" Click="ProcessComplete_Click">
-                                <ContentControl>
-                                    <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
-                                        <TextBlock Text="완료"  FontSize="12" VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </ContentControl>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-                    <Grid DockPanel.Dock="Bottom"/>
-                </DockPanel>
-                <!-- Overlay-->
-                <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}"/>
-                <ContentControl x:Name="popup" Visibility="Collapsed">
-                    <i:Interaction.Behaviors>
-                        <local:DragBehavior/>
-                    </i:Interaction.Behaviors>
-                </ContentControl>
-            </Grid>
-        </ScrollViewer>
-    </Grid>
-    
-    
+                                <Button x:Name="ProcessEditButton" Width="100" Click="ProcessEditButton_Click">
+                                    <ContentControl>
+                                        <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <TextBlock Text="수정"  FontSize="12" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ContentControl>
+                                </Button>
+                                <Button x:Name="ProcessComplete" Width="100" Margin="20, 0" Click="ProcessComplete_Click">
+                                    <ContentControl>
+                                        <StackPanel Orientation="Horizontal" Width="Auto" HorizontalAlignment="Left" VerticalAlignment="Center">
+                                            <TextBlock Text="완료"  FontSize="12" VerticalAlignment="Center"/>
+                                        </StackPanel>
+                                    </ContentControl>
+                                </Button>
+                            </StackPanel>
+                        </Grid>
+                        <Grid DockPanel.Dock="Bottom"/>
+                    </DockPanel>
+                </Grid>
+            </ScrollViewer>
+        </Grid>
+        <!-- Overlay-->
+        <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}" Grid.ZIndex="998"/>
+        <ContentControl x:Name="popup" Visibility="Collapsed" Grid.ZIndex="999">
+            <i:Interaction.Behaviors>
+                <local:DragBehavior/>
+            </i:Interaction.Behaviors>
+        </ContentControl>
+    </Grid >
     
 </UserControl>
