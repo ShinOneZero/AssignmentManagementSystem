@@ -32,16 +32,21 @@ namespace AMS.Pages
         public MyRequestPage()
         {
             InitializeComponent();
-
-            MyRequest_List = new ObservableCollection<RequestInfo>();
             m_UserInfo = mainWindow.GetUserInfo();
+
+            RefreshData();
+        }
+
+        public void RefreshData()
+        {
+            MyRequest_List = new ObservableCollection<RequestInfo>();
             DataBase db = new DataBase();
             m_MyRequests = db.RequestData("SELECT A.REQUEST_NO, A.REQUEST_DATE, A.CREATION_TIMESTAMP, A.LAST_UPDATE_TIMESTAMP, A.REQUEST_STATE, A.REQUEST_END_DATE, A.PRODUCT, A.REQUESTER_EMP_NO, " +
                                                         "A.PERFORMER_EMP_NO, A.TITLE, A.R_CONTENT, A.P_CONTENT, A.REQUEST_HOPE_END_DATE, A.PROCESS_END_DATE, A.PROCESS_START_DATE, " +
                                                         "(SELECT USER_NAME FROM USER_INFO S WHERE S.USER_NO = A.REQUESTER_EMP_NO)  AS REQUESTER_EMP_NAME, " +
                                                         "(SELECT USER_NAME FROM USER_INFO S WHERE S.USER_NO = A.PERFORMER_EMP_NO) AS PERFORMAER_EMP_NAME " +
                                                         "FROM REQUEST_INFO A " +
-                                                        "WHERE (A.REQUESTER_EMP_NO = " + m_UserInfo.Rows[0]["USER_NO"].ToString() + " OR A.PERFORMER_EMP_NO = " + m_UserInfo.Rows[0]["USER_NO"].ToString() + ") ");
+                                                        "WHERE (A.REQUESTER_EMP_NO = " + m_UserInfo.Rows[0]["USER_NO"].ToString() + " OR A.PERFORMER_EMP_NO = " + m_UserInfo.Rows[0]["USER_NO"].ToString() + ") AND A.REQUEST_STATE <> 9");
 
             if (m_MyRequests != null)
             {
@@ -54,7 +59,8 @@ namespace AMS.Pages
                         Creation_TimeStamp = (DateTime)dr["CREATION_TIMESTAMP"],
                         Last_Update_TimeStamp = (DateTime)dr["LAST_UPDATE_TIMESTAMP"],
                         Request_State_Name = (int)dr["REQUEST_STATE"] == 1 ? "접수완료" :
-                                                                    (int)dr["REQUEST_STATE"] == 2 ? "처리중" : "완료" ,
+                                                                    (int)dr["REQUEST_STATE"] == 2 ? "처리중" :
+                                                                            (int)dr["REQUEST_STATE"] == 3 ? "완료" : "취소",
                         Request_State = (int)dr["REQUEST_STATE"],
                         Request_End_Date = (DateTime)dr["REQUEST_END_DATE"],
                         Product = (string)dr["PRODUCT"],
@@ -108,14 +114,14 @@ namespace AMS.Pages
 
         private void MyRequestList_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            mainWindow.popup.Content = new DetailRequestInfoView((RequestInfo)MyRequestList.SelectedItem, VIEW_MODE.WRITE_MODE);
+            mainWindow.popup.Content = new DetailRequestInfoView(this, (RequestInfo)MyRequestList.SelectedItem, VIEW_MODE.WRITE_MODE);
             mainWindow.Overlay.Visibility = Visibility.Visible;
             mainWindow.popup.Visibility = Visibility.Visible;
         }
 
         private void AddRequestButton_Click(object sender, RoutedEventArgs e)
         {
-            mainWindow.popup.Content = new DetailRequestInfoView(null, VIEW_MODE.WRITE_MODE);
+            mainWindow.popup.Content = new DetailRequestInfoView(this, null, VIEW_MODE.WRITE_MODE);
             mainWindow.Overlay.Visibility = Visibility.Visible;
             mainWindow.popup.Visibility = Visibility.Visible;
         }

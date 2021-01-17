@@ -27,7 +27,6 @@ namespace AMS.CustomTextEditor
         public WPFWebBrowser()
         {
             InitializeComponent();
-
             webBrowser.NavigateToString(Properties.Resources.New);
             doc = webBrowser.Document as IHTMLDocument2;
             doc.designMode = "On";
@@ -35,7 +34,8 @@ namespace AMS.CustomTextEditor
 
         public string GetHTML()
         {
-            return doc.body.innerHTML;
+            HTMLDocument output = webBrowser.Document as HTMLDocument;
+            return output.documentElement.innerHTML;
         }
 
         public void SetHTML(string html)
@@ -158,6 +158,22 @@ namespace AMS.CustomTextEditor
         {
             doc = webBrowser.Document as IHTMLDocument2;
             doc.designMode = "On";
+        }
+
+        private void webBrowser_KeyDown(object sender, KeyEventArgs e)
+        {
+            /*
+            if(e.Key == Key.V && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                IDataObject data_object = Clipboard.GetDataObject();
+
+                if (data_object.GetDataPresent(DataFormats.Bitmap))
+                {
+                    dynamic r = doc.selection.createRange();
+                    r.pasteHTML(string.Format(@"<img src=""{0}"">", (string)data_object.GetData(DataFormats.Bitmap)));
+                }
+            }
+            */
         }
     }
 }

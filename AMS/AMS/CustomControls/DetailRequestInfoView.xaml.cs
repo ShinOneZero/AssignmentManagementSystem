@@ -1,5 +1,6 @@
 ﻿using AMS.CustomClass;
 using AMS.Database;
+using AMS.Pages;
 using System;
 using System.Collections.Generic;
 using System.Data.OleDb;
@@ -27,17 +28,16 @@ namespace AMS.CustomControls
         private DataBase db = new DataBase();
         private RequestInfo m_RequestInfo;
         private VIEW_MODE m_Mode;
+        private object m_Parent;
 
-        public DetailRequestInfoView(RequestInfo requestInfo, VIEW_MODE mode)
+        public DetailRequestInfoView(object parent, RequestInfo requestInfo, VIEW_MODE mode)
         {
             InitializeComponent();
             m_RequestInfo = requestInfo;
             m_Mode = mode;
-        }
+            m_Parent = parent;
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
-            if(m_RequestInfo == null)
+            if (m_RequestInfo == null && mode == VIEW_MODE.WRITE_MODE)
             {
                 m_RequestInfo = new RequestInfo();
                 m_RequestInfo.Request_No = db.RequestData("SELECT IIF(MAX(IIF(LEFT(REQUEST_NO, 2) = FORMAT(DATE(), \"YY\"), REQUEST_NO, NULL))<>NULL, " +
@@ -46,6 +46,7 @@ namespace AMS.CustomControls
                                                                              "(FORMAT(DATE(), \"YY\")+1) & \"-0001\")) AS REQUEST_NO FROM REQUEST_INFO").Rows[0]["REQUEST_NO"].ToString();
                 m_RequestInfo.Creation_TimeStamp = DateTime.Now;
                 m_RequestInfo.Last_Update_TimeStamp = DateTime.Now;
+                m_RequestInfo.Request_Hope_End_Date = DateTime.Now.AddDays(-7).Date;
                 m_RequestInfo.Request_Date = DateTime.Now;
                 m_RequestInfo.Requester_Emp_No = int.Parse(mainWindow.GetUserInfo().Rows[0]["USER_NO"].ToString());
                 m_RequestInfo.Requester_Emp_Name = mainWindow.GetUserInfo().Rows[0]["USER_NAME"].ToString();
@@ -56,6 +57,21 @@ namespace AMS.CustomControls
             InitControl();
         }
 
+        private void ProcesserInitialized()
+        {
+            List<string> list = new List<string>();
+            list.Add("최동수");
+            list.Add("윤숙현");
+            list.Add("오만석");
+            list.Add("신원영");
+
+            ProcesserName.ItemsSource = list;
+
+            if (!String.IsNullOrEmpty(m_RequestInfo.Performer_Emp_Name))
+            {
+                ProcesserName.SelectedIndex = ProcesserName.Items.IndexOf(m_RequestInfo.Performer_Emp_Name);
+            }
+        }
         private void InitControl()
         {
             if(m_RequestInfo != null)
@@ -64,6 +80,8 @@ namespace AMS.CustomControls
                 RequestDate.SelectedDate = m_RequestInfo.Request_Date;
                 RequesterName.Text = m_RequestInfo.Requester_Emp_Name + "("
                     + db.RequestData("SELECT DEPORTMENT FROM USER_INFO WHERE USER_NO = " + m_RequestInfo.Requester_Emp_No).Rows[0]["DEPORTMENT"].ToString() + ")";
+
+                RequestHopeEndDate.SelectedDate = m_RequestInfo.Request_Hope_End_Date;
 
                 if (!String.IsNullOrEmpty(m_RequestInfo.Title))
                     Title.Text = m_RequestInfo.Title;
@@ -106,17 +124,75 @@ namespace AMS.CustomControls
                 if (!String.IsNullOrEmpty(m_RequestInfo.R_Content)) ;
                     RequestContent.SetHTML(m_RequestInfo.R_Content);
 
-                if (m_RequestInfo.Process_Start_Date != DateTime.MinValue || m_RequestInfo.Process_Start_Date != null)
-                    ProcessStartDate.SelectedDate = m_RequestInfo.Process_Start_Date;
+                ProcesserInitialized();
 
-                if (m_RequestInfo.Process_End_Date != DateTime.MinValue || m_RequestInfo.Process_End_Date != null)
-                    ProcessEndDate.SelectedDate = m_RequestInfo.Process_End_Date;
+                if (m_RequestInfo.Request_State >= 2)
+                {
+                    if (m_RequestInfo.Process_Start_Date != DateTime.MinValue || m_RequestInfo.Process_Start_Date != null)
+                        ProcessStartDate.SelectedDate = m_RequestInfo.Process_Start_Date;
 
-                if (!String.IsNullOrEmpty(m_RequestInfo.Performer_Emp_Name))
-                    ProcesserName.Text = m_RequestInfo.Performer_Emp_Name + "("
-                        + db.RequestData("SELECT DEPORTMENT FROM USER_INFO WHERE USER_NO = " + m_RequestInfo.Performer_Emp_No).Rows[0]["DEPORTMENT"].ToString() + ")";
+                    if (m_RequestInfo.Process_End_Date != DateTime.MinValue || m_RequestInfo.Process_End_Date != null)
+                        ProcessEndDate.SelectedDate = m_RequestInfo.Process_End_Date;
 
-                if (!String.IsNullOrEmpty(m_RequestInfo.P_Content)) ;
+                    /*
+                    if (!String.IsNullOrEmpty(m_RequestInfo.Performer_Emp_Name))
+                    {
+                        ProcesserName.Text = m_RequestInfo.Performer_Emp_Name + "("
+                            + db.RequestData("SELECT DEPORTMENT FROM USER_INFO WHERE USER_NO = " + m_RequestInfo.Performer_Emp_No).Rows[0]["DEPORTMENT"].ToString() + ")";
+                    } 
+                    */
+
+                    if (!String.IsNullOrEmpty(m_RequestInfo.P_Content))
+                        ProcessContent.SetHTML(m_RequestInfo.P_Content);
+                }
+            }
+
+            if (!mainWindow.GetUserInfo().Rows[0]["USER_TP"].ToString().Equals("A"))
+            {
+                ProcesserName.IsEnabled = false;
+                ProcessContent.IsEnabled = false;
+                ProcessContent.Editor.doc.designMode = "Off";
+                ProcessEditButton.IsEnabled = false;
+                ProcessComplete.IsEnabled = false;
+            }
+
+            if(m_Mode == VIEW_MODE.READ_MODE)
+            {
+                RequestHopeEndDate.IsEnabled = false;
+                Title.IsEnabled = false;
+                Product1.IsEnabled = false;
+                Product2.IsEnabled = false;
+                Product3.IsEnabled = false;
+                Product4.IsEnabled = false;
+                Product5.IsEnabled = false;
+                Product6.IsEnabled = false;
+                Product7.IsEnabled = false;
+                RequestContent.IsEnabled = false;
+                RequestContent.Editor.doc.designMode = "Off";
+                RequestCancelButton.IsEnabled = false;
+                RequestEditButton.IsEnabled = false;
+                ProcesserName.IsEnabled = false;
+                ProcessContent.IsEnabled = false;
+                ProcessContent.Editor.doc.designMode = "Off";
+                ProcessEditButton.IsEnabled = false;
+                ProcessComplete.IsEnabled = false;
+            }
+
+            if (m_Mode == VIEW_MODE.WRITE_MODE && mainWindow.GetUserInfo().Rows[0]["USER_TP"].ToString() != "A" && m_RequestInfo.Request_State == 3)
+            {
+                RequestHopeEndDate.IsEnabled = false;
+                Title.IsEnabled = false;
+                Product1.IsEnabled = false;
+                Product2.IsEnabled = false;
+                Product3.IsEnabled = false;
+                Product4.IsEnabled = false;
+                Product5.IsEnabled = false;
+                Product6.IsEnabled = false;
+                Product7.IsEnabled = false;
+                RequestContent.IsEnabled = false;
+                RequestContent.Editor.doc.designMode = "Off";
+                RequestCancelButton.IsEnabled = false;
+                RequestEditButton.IsEnabled = false;
             }
         }
 
@@ -129,42 +205,44 @@ namespace AMS.CustomControls
 
         private void RequestCancelButton_Click(object sender, RoutedEventArgs e)
         {
-            popup.Content = new WaitWindow("Wait...");
-            Overlay.Visibility = Visibility.Visible;
-            popup.Visibility = Visibility.Visible;
-
             string no = null;
-            var data = db.RequestData("SELECT * FROM REQUEST_INFO WHERE REQUEST_NO = " + m_RequestInfo.Request_No);
+            var data = db.RequestData("SELECT * FROM REQUEST_INFO WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
 
             if(data.Rows.Count == 1)
                 no = data.Rows[0]["REQUEST_NO"].ToString();
 
             if(no != null)
             {
-                db.RequestSQL("UPDATE REQUEST_INFO SET REQUEST_STATE=9 WHERE REQUEST_NO = " + m_RequestInfo.Request_No);
-                popup.Content = null;
-                Overlay.Visibility = Visibility.Collapsed;
-                popup.Visibility = Visibility.Collapsed;
-
+                db.RequestSQL("UPDATE REQUEST_INFO SET REQUEST_STATE=9 WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
+                RefreshData();
                 MessageBox.Show("접수가 취소되었습니다.");
-                mainWindow.popup.Content = null;
-                mainWindow.Overlay.Visibility = Visibility.Collapsed;
-                mainWindow.popup.Visibility = Visibility.Collapsed;
             }
             else
             {
                 MessageBox.Show("접수되지 않은 업무입니다.");
-                popup.Content = null;
-                Overlay.Visibility = Visibility.Collapsed;
-                popup.Visibility = Visibility.Collapsed;
+            }
+
+            mainWindow.popup.Content = null;
+            mainWindow.Overlay.Visibility = Visibility.Collapsed;
+            mainWindow.popup.Visibility = Visibility.Collapsed;
+        }
+
+        private void RefreshData()
+        {
+            if (m_Parent.GetType() == typeof(MyRequestPage))
+            {
+                ((MyRequestPage)m_Parent).RefreshData();
+            }
+            else
+            {
+                ((AllRequestPage)m_Parent).RefreshData();
             }
         }
 
         private void RequestEditButton_Click(object sender, RoutedEventArgs e)
         {
-            popup.Content = new WaitWindow("Wait...");
-            Overlay.Visibility = Visibility.Visible;
-            popup.Visibility = Visibility.Visible;
+            if (!CheckControls())
+                return;
 
             string no = null;
             var data = db.RequestData("SELECT * FROM REQUEST_INFO WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
@@ -194,10 +272,7 @@ namespace AMS.CustomControls
                 cmd.Parameters.AddWithValue("@value6", m_RequestInfo.Product);
 
                 db.RequestSQL(cmd);
-                popup.Content = null;
-                Overlay.Visibility = Visibility.Collapsed;
-                popup.Visibility = Visibility.Collapsed;
-
+                RefreshData();
                 MessageBox.Show("접수내용이 수정되었습니다.");
             }
             // 접수
@@ -221,11 +296,12 @@ namespace AMS.CustomControls
                 cmd.Parameters.AddWithValue("@value13", m_RequestInfo.Performer_Emp_No);
 
                 db.RequestSQL(cmd);
-                popup.Content = null;
-                Overlay.Visibility = Visibility.Collapsed;
-                popup.Visibility = Visibility.Collapsed;
+                RefreshData();
                 MessageBox.Show("신규 접수가 완료되었습니다.");
             }
+            mainWindow.popup.Content = null;
+            mainWindow.Overlay.Visibility = Visibility.Collapsed;
+            mainWindow.popup.Visibility = Visibility.Collapsed;
         }
 
         private void GetRequestInfo()
@@ -270,11 +346,11 @@ namespace AMS.CustomControls
                 m_RequestInfo.Process_Start_Date = ProcessStartDate.SelectedDate;
             }
 
-            m_RequestInfo.Performer_Emp_Name = ProcesserName.Text;
-            var data = db.RequestData("SELECT EMP_NO FROM USER_INFO WHERE USER_NAME = '" + m_RequestInfo.Performer_Emp_Name + "'");
+            m_RequestInfo.Performer_Emp_Name = ProcesserName.SelectedItem.ToString();
+            var data = db.RequestData("SELECT USER_NO FROM USER_INFO WHERE USER_NAME = '" + m_RequestInfo.Performer_Emp_Name + "'");
 
             if (data.Rows.Count == 1)
-                m_RequestInfo.Performer_Emp_No = int.Parse(data.Rows[0]["EMP_NO"].ToString());
+                m_RequestInfo.Performer_Emp_No = int.Parse(data.Rows[0]["USER_NO"].ToString());
             else
             {
                 MessageBox.Show("유효하지 않은 처리자입니다.");
@@ -284,6 +360,14 @@ namespace AMS.CustomControls
 
         private void ProcessEditButton_Click(object sender, RoutedEventArgs e)
         {
+            if (!CheckControls())
+                return;
+
+            if(ProcesserName.SelectedItem == null)
+            {
+                MessageBox.Show("처리자를 입력해주세요.");
+                return;
+            }
             GetPerforInfo();
 
             // 처음 처리 등록
@@ -306,10 +390,7 @@ namespace AMS.CustomControls
                 cmd.Parameters.AddWithValue("@value5", m_RequestInfo.Performer_Emp_No);
 
                 db.RequestSQL(cmd);
-
-                popup.Content = null;
-                Overlay.Visibility = Visibility.Collapsed;
-                popup.Visibility = Visibility.Collapsed;
+                RefreshData();
                 MessageBox.Show("처리내용이 저장되었습니다.");
             }
             else
@@ -323,17 +404,25 @@ namespace AMS.CustomControls
                 cmd.Parameters.AddWithValue("@value2", m_RequestInfo.P_Content);
 
                 db.RequestSQL(cmd);
-
-                popup.Content = null;
-                Overlay.Visibility = Visibility.Collapsed;
-                popup.Visibility = Visibility.Collapsed;
+                RefreshData();
                 MessageBox.Show("처리내용이 수정되었습니다.");
             }
+            mainWindow.popup.Content = null;
+            mainWindow.Overlay.Visibility = Visibility.Collapsed;
+            mainWindow.popup.Visibility = Visibility.Collapsed;
         }
 
         private void ProcessComplete_Click(object sender, RoutedEventArgs e)
         {
+            if (!CheckControls())
+                return;
             GetPerforInfo();
+
+            if(m_RequestInfo.Request_State == 1)
+            {
+                MessageBox.Show("처리(수정)후 완료처리를 진행해주세요.");
+                return;
+            }
 
             m_RequestInfo.Request_State = 3;
 
@@ -341,7 +430,7 @@ namespace AMS.CustomControls
                                                                         "LAST_UPDATE_TIMESTAMP = @value1, " +
                                                                         "PROCESS_END_DATE = @value2, " +
                                                                         "REQUEST_STATE = @value3, " +
-                                                                        "P_CONTENT = @value4, " +
+                                                                        "P_CONTENT = @value4 " +
                                                                         "WHERE REQUEST_NO = '" + m_RequestInfo.Request_No + "'");
 
             cmd.Parameters.AddWithValue("@value1", DateTime.Now.ToString());
@@ -350,11 +439,61 @@ namespace AMS.CustomControls
             cmd.Parameters.AddWithValue("@value4", m_RequestInfo.P_Content);
 
             db.RequestSQL(cmd);
-
-            popup.Content = null;
-            Overlay.Visibility = Visibility.Collapsed;
-            popup.Visibility = Visibility.Collapsed;
+            RefreshData();
             MessageBox.Show("요청업무가 완료 처리되었습니다.");
+
+            mainWindow.popup.Content = null;
+            mainWindow.Overlay.Visibility = Visibility.Collapsed;
+            mainWindow.popup.Visibility = Visibility.Collapsed;
+        }
+
+        private void ProcesserName_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private bool CheckControls()
+        {
+            if(m_RequestInfo != null)
+            {
+                #region GetProductInfo
+                if ((bool)Product1.IsChecked) m_RequestInfo.Product = "1";
+                else m_RequestInfo.Product = "0";
+
+                if ((bool)Product2.IsChecked) m_RequestInfo.Product += "1";
+                else m_RequestInfo.Product += "0";
+
+                if ((bool)Product3.IsChecked) m_RequestInfo.Product += "1";
+                else m_RequestInfo.Product += "0";
+
+                if ((bool)Product4.IsChecked) m_RequestInfo.Product += "1";
+                else m_RequestInfo.Product += "0";
+
+                if ((bool)Product5.IsChecked) m_RequestInfo.Product += "1";
+                else m_RequestInfo.Product += "0";
+
+                if ((bool)Product6.IsChecked) m_RequestInfo.Product += "1";
+                else m_RequestInfo.Product += "0";
+
+                if ((bool)Product7.IsChecked) m_RequestInfo.Product += "1";
+                else m_RequestInfo.Product += "0";
+                #endregion
+
+                if (String.IsNullOrEmpty(Title.Text))
+                {
+                    MessageBox.Show("제목을 입력해주세요");
+                    return false;
+                }
+
+                if (RequestHopeEndDate.SelectedDate == DateTime.MinValue || RequestHopeEndDate.SelectedDate == null)
+                {
+                    MessageBox.Show("완료 희망일자를 선택해주세요");
+                    return false;
+                }
+
+                return true;
+            }
+            return false;
         }
     }
 }

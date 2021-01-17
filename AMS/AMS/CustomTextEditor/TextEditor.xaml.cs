@@ -45,6 +45,7 @@ namespace AMS.CustomTextEditor
             listFont.Sort();
 
             SettingFonts.ItemsSource = listFont;
+            SettingFonts.SelectedItem = SettingFonts.Items.IndexOf("맑은 고딕");
         }
         public void FontSizeInitialisation()
         {
@@ -55,6 +56,7 @@ namespace AMS.CustomTextEditor
                 items.Add(x.ToString());
             }
             SettingFontSize.ItemsSource = items;
+            SettingFontSize.SelectedItem = SettingFontSize.Items.IndexOf("5");
         }
 
         public void SetHTML(string html)

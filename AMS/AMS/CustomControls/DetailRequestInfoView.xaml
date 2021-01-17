@@ -9,7 +9,7 @@
              xmlns:customtexteditor="clr-namespace:AMS.CustomTextEditor"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1200"
-             Background="White" Loaded="UserControl_Loaded">
+             Background="White">
     <UserControl.Resources>
         <Style x:Key="OverlayStyle" TargetType="{x:Type Border}">
             <Setter Property="Background" Value="Black"/>
@@ -325,11 +325,15 @@
                                                 FontSize="16"/>
                                     </Grid>
                                     <Grid Grid.Column="5" >
-                                        <TextBox x:Name="ProcesserName"
-                                             HorizontalAlignment="Center"
-                                             VerticalAlignment="Center"
-                                             FontSize="16"
-                                             IsReadOnly="True"/>
+                                        <ComboBox 
+                                            x:Name="ProcesserName" 
+                                            Width="150"
+                                            Margin="20, 0"
+                                            FontSize="16"
+                                            HorizontalAlignment="Left"
+                                            HorizontalContentAlignment="Center"
+                                            VerticalContentAlignment="Center"
+                                            SelectionChanged="ProcesserName_SelectionChanged"/>
                                     </Grid>
                                 </Grid>
                                 <Grid Grid.Row="3" Background="#FFB0B0B0" />
@@ -369,13 +373,6 @@
                 </Grid>
             </ScrollViewer>
         </Grid>
-        <!-- Overlay-->
-        <Border x:Name="Overlay" Visibility="Collapsed" Style="{StaticResource OverlayStyle}" Grid.ZIndex="998"/>
-        <ContentControl x:Name="popup" Visibility="Collapsed" Grid.ZIndex="999">
-            <i:Interaction.Behaviors>
-                <local:DragBehavior/>
-            </i:Interaction.Behaviors>
-        </ContentControl>
     </Grid >
     
 </UserControl>

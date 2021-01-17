@@ -12,7 +12,7 @@ namespace AMS.Database
 {
     public class DataBase
     {
-        private static string m_Path = @"D:\QMS_DB";
+        private static string m_Path = System.Environment.CurrentDirectory + @"\QMS_DB";
         private OleDbConnection m_Connector; 
         public void Database()
         {

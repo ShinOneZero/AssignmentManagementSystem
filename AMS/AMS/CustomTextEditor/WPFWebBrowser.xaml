@@ -6,5 +6,7 @@
              xmlns:local="clr-namespace:AMS.CustomTextEditor"
              mc:Ignorable="d" 
              d:DesignHeight="450" d:DesignWidth="800">
-    <WebBrowser x:Name="webBrowser" LoadCompleted="webBrowser_LoadCompleted"/>
+    <Grid>
+        <WebBrowser x:Name="webBrowser" LoadCompleted="webBrowser_LoadCompleted" KeyDown="webBrowser_KeyDown" AllowDrop="True"/>
+    </Grid>
 </UserControl>

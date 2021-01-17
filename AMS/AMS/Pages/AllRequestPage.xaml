@@ -77,7 +77,7 @@
                                         CanUserResizeRows="False"
                                         AutoGenerateColumns="False"
                                         SelectionUnit="FullRow"
-                                        PreviewMouseLeftButtonUp="AllRequestList_PreviewMouseLeftButtonUp">
+                                        MouseDoubleClick="AllRequestList_MouseDoubleClick">
                             <DataGrid.Resources>
                                 <Style x:Key="GridCellStyle" TargetType="{x:Type TextBlock}" BasedOn="{StaticResource {x:Type TextBlock}}">
                                     <Setter Property="VerticalAlignment" Value="Center"/>
@@ -93,11 +93,13 @@
                                 </Style>
                             </DataGrid.RowStyle>
                             <DataGrid.Columns>
-                                <DataGridTextColumn Header="구분" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
-                                <DataGridTextColumn Header="품질관리 업무명" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="*"/>
-                                <DataGridTextColumn Header="요청자" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
-                                <DataGridTextColumn Header="수행자" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
-                                <DataGridTextColumn Header="접수일" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="200"/>
+                                <DataGridTextColumn Header="구분" Binding="{Binding Request_No}" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
+                                <DataGridTextColumn Header="진도" Binding="{Binding Request_State_Name}" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
+                                <DataGridTextColumn Header="품질관리 업무명" Binding="{Binding Title}" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="*"/>
+                                <DataGridTextColumn Header="요청자" Binding="{Binding Requester_Emp_Name}" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
+                                <DataGridTextColumn Header="수행자" Binding="{Binding Performer_Emp_Name}" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="120"/>
+                                <DataGridTextColumn Header="접수일" Binding="{Binding Request_Date, StringFormat='yyyy-MM-dd hh:mm'}" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="200"/>
+                                <DataGridTextColumn Header="처리완료일" Binding="{Binding Process_End_Date, StringFormat='yyyy-MM-dd hh:mm'}" ElementStyle="{StaticResource GridCellStyle}" IsReadOnly="True" HeaderStyle="{StaticResource GridHeadStyle}" Width="200"/>
                             </DataGrid.Columns>
                             <DataGrid.CellStyle>
                                 <Style TargetType="{x:Type DataGridCell}" BasedOn="{StaticResource {x:Type DataGridCell}}">

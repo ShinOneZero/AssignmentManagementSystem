@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
+using System.IO.Compression;
+using System.Windows;
 
 namespace AMS.Database
 {
@@ -13,6 +12,76 @@ namespace AMS.Database
         {
 
         }
+
+        public static void CheckFileAndRemove(string filePath)
+        {
+            FileInfo fileInfo = new FileInfo(filePath);
+
+            if (fileInfo.Exists)
+                fileInfo.Delete();
+        }
+
+        public static void CreateZIPFile(string backupFolder, string zipFilePath)
+        {
+            try
+            {
+                using (FileStream fileStream = new FileStream(zipFilePath, FileMode.Create, FileAccess.ReadWrite))
+                {
+                    using (ZipArchive zipArchive = new ZipArchive(fileStream, ZipArchiveMode.Create))
+                    {
+                        foreach (string filePath in Directory.EnumerateFiles(backupFolder, "*.*", SearchOption.AllDirectories))
+                        {
+                            string relativePath = filePath.Substring(backupFolder.Length + 1);
+
+                            try
+                            {
+                                zipArchive.CreateEntryFromFile(filePath, relativePath);
+                            }
+                            catch (PathTooLongException)
+                            {
+
+                            }
+                        }
+                    }
+                }
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("데이터베이스 파일을 찾을 수 없습니다.");
+            }
+        }
+
+        public static void ExtractZIPFile(string zipFilePath, string backupFolder)
+        {
+            try
+            {
+                using (ZipArchive zipArchive = ZipFile.OpenRead(zipFilePath))
+                {
+                    foreach (ZipArchiveEntry zipArchiveEntry in zipArchive.Entries)
+                    {
+                        try
+                        {
+                            string folderPath = Path.GetDirectoryName(Path.Combine(backupFolder, zipArchiveEntry.FullName));
+
+                            if (!Directory.Exists(folderPath))
+                            {
+                                Directory.CreateDirectory(folderPath);
+                            }
+                            zipArchiveEntry.ExtractToFile(Path.Combine(backupFolder, zipArchiveEntry.FullName));
+                        }
+                        catch (PathTooLongException)
+                        {
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("데이터베이스 파일을 찾을 수 없습니다.");
+            }
+        }
+
+
 
         public static void ExportToExcel(DataTable table)
         {
