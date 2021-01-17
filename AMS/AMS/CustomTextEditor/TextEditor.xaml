@@ -1,0 +1,97 @@
+﻿<UserControl x:Class="AMS.CustomTextEditor.TextEditor"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:AMS.CustomTextEditor"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        <ToolBarTray>
+            <ToolBar
+                Style="{DynamicResource MaterialDesignToolBar}"
+                ClipToBounds="False">
+                <ComboBox 
+                    x:Name="SettingFonts" 
+                    Width="150"
+                    SelectionChanged="SettingFonts_SelectionChanged"
+                    materialDesign:HintAssist.Hint="폰트"/>
+
+                <ComboBox
+                    x:Name="SettingFontSize"
+                    Width="80"
+                    materialDesign:HintAssist.Hint="크기"
+                    SelectionChanged="SettingFontSize_SelectionChanged"/>
+
+                <Separator />
+                <Button 
+                    x:Name="SettingsBold"             
+                    Click="SettingsBold_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatBold" />
+                </Button>
+
+                <Button 
+                    x:Name="SettingsItalic"             
+                    Click="SettingsItalic_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatItalic" />
+                </Button>
+
+                <Button 
+                    x:Name="SettingsUnderLine"             
+                    Click="SettingsUnderLine_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatUnderline" />
+                </Button>
+                
+                <Separator />
+                
+                <Button 
+                    x:Name="SettingsFontColor"             
+                    Click="SettingsFontColor_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatColorText" />
+                </Button>
+
+                <Separator />
+
+                <Button 
+                    x:Name="SettingsLeftAlign"             
+                    Click="SettingsLeftAlign_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatAlignLeft" />
+                </Button>
+
+                <Button 
+                    x:Name="SettingsCenterAlign"             
+                    Click="SettingsCenterAlign_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatAlignCenter" />
+                </Button>
+
+                <Button 
+                    x:Name="SettingsRightAlign"             
+                    Click="SettingsRightAlign_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatAlignRight" />
+                </Button>
+
+                <Button 
+                    x:Name="SettingsJustifyAlign"             
+                    Click="SettingsJustifyAlign_Click"
+                    ToolBar.OverflowMode="AsNeeded">
+                    <materialDesign:PackIcon Kind="FormatAlignJustify" />
+                </Button>
+
+                <Separator />
+            </ToolBar>
+        </ToolBarTray>
+        <local:WPFWebBrowser x:Name="Editor" Grid.Row="1" Background="White"/>
+    </Grid>
+</UserControl>

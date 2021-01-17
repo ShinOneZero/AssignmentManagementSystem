@@ -3,7 +3,10 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:AMS.CustomControls" xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" xmlns:i="http://schemas.microsoft.com/xaml/behaviors" xmlns:customeditor="clr-namespace:AMS.CustomEditor"
+             xmlns:local="clr-namespace:AMS.CustomControls" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes" 
+             xmlns:i="http://schemas.microsoft.com/xaml/behaviors" 
+             xmlns:customtexteditor="clr-namespace:AMS.CustomTextEditor"
              mc:Ignorable="d" 
              d:DesignHeight="1000" d:DesignWidth="1200"
              Background="White" Loaded="UserControl_Loaded">
@@ -215,7 +218,7 @@
                                 </Grid>
                                 <Grid Grid.Row="5" Background="#FFB0B0B0" />
                                 <Grid Grid.Row="6">
-                                    <customeditor:WebEditor
+                                    <customtexteditor:TextEditor
                                                 x:Name="RequestContent"
                                                 Margin="5"
                                                 FontSize="16"/>
@@ -331,7 +334,7 @@
                                 </Grid>
                                 <Grid Grid.Row="3" Background="#FFB0B0B0" />
                                 <Grid Grid.Row="4">
-                                    <customeditor:WebEditor
+                                    <customtexteditor:TextEditor
                                                 x:Name="ProcessContent"
                                                 Margin="5"
                                                 FontSize="16"/>

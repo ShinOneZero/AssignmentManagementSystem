@@ -1,5 +1,4 @@
 ﻿using AMS.CustomClass;
-using AMS.CustomEditor;
 using AMS.Database;
 using System;
 using System.Collections.Generic;
@@ -104,7 +103,7 @@ namespace AMS.CustomControls
                     }
                 }
 
-                if (!String.IsNullOrEmpty(m_RequestInfo.R_Content))
+                if (!String.IsNullOrEmpty(m_RequestInfo.R_Content)) ;
                     RequestContent.SetHTML(m_RequestInfo.R_Content);
 
                 if (m_RequestInfo.Process_Start_Date != DateTime.MinValue || m_RequestInfo.Process_Start_Date != null)
